@@ -1,4 +1,4 @@
-function x = plusolve(L,U,P,b)
+function x = pluSolve(L,U,P,b) % pluSolve Fa les permutacions i resol els sistemes
 n = length(b);
 
 for i=1:1:n

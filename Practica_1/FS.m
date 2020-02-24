@@ -1,7 +1,7 @@
 function x = FS(LT, b)
 format long g
 [dim, n] = size(LT);
-if dim~= n; error=('NECESSITA UNA MATRIU QUADRADA. Revisar els arguments'); end
+if dim~= n; error('NECESSITA UNA MATRIU QUADRADA. Revisar els arguments'); end
 
 x=[b(1)/LT(1,1),0*(1:n-1)];
 

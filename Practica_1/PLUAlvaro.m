@@ -1,4 +1,5 @@
-function [P,L,U]=pplu(A)
+function [P,L,U]=PLUAlvaro(A)
+% PLUAlvaro Funcio copiada tal qual de la pissarra
 [m,n]= size (A); if m~= n; error=('not square matrix'); end
 U=A; L=eye(n); P=[1:n]';
 

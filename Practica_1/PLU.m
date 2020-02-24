@@ -1,7 +1,12 @@
 function [P, L, U] = PLU(A)
+    % PLU Factoritza una matriu A en una triangular superior i una inferior. Retorna un vector P en que a cada posicio hi ha la fila que shi ha de posar. Servira per permutar els coeficients indepents.
+
     %Primer sabem la dimensio de la matriu
     [dim, n] = size(A);
-    if dim ~= n; error = ('PLU NECESSITA UNA MATRIU QUADRADA. Revisar els arguments'); end
+
+    if dim ~= n
+        error('PLU NECESSITA UNA MATRIU QUADRADA. Revisar els arguments');
+    end
 
     U = A; L = eye(dim); P = [1:dim];
 
