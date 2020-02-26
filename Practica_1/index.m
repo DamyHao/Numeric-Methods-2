@@ -9,7 +9,7 @@ VOLTATGE = 5;
 %% a)
 
 for n = 5:5:30
-    N = 2 * n - 1;
+    N = 2 * n - 1 ;
     A = zeros(N);
     % Muntem la matriu (les matrius que muntem han de ser amb files imparells sempre)
     for i = 1:1:N
