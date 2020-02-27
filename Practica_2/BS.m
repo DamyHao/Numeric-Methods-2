@@ -1,7 +1,10 @@
 function x = BS(UT, b) 
 
 [dim, n] = size(UT);
+[res, dimB] = size(b);
+
 if dim~= n; error('NECESSITA UNA MATRIU QUADRADA. Revisar els arguments'); end
+if dim~= res; error('El vector b i la matriu UT no son del mateix tamany. Revisar els arguments'); end 
 
 x=[0*(1:n-1),b(n)/UT(n,n)];
 
