@@ -2,7 +2,7 @@ function x = qrSolve(UR, b)
     [n, m] = size(UR);
 
     if n > m
-        R = triu(UR(1:m, :)); %seleccionem la matriu R barret
+        R = triu(UR(1:m, 1:m)); %seleccionem la matriu R barret
         M = m;
     else
         R = triu(UR);
