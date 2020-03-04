@@ -14,6 +14,7 @@ plot (x,f(x))
 hold off
 
 
+
 %% B) executem el qrSolver per trobar els coeficients de l'aproximacio de f mitjan�ant la matriu de Vandermonde
 
 casos=[[14,7]; [28,14]; [28,20]; [64,30]];
