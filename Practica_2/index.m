@@ -6,15 +6,15 @@ format long g;
 
 %FUNCIO A ESTUDIAR:
 f = @(x)(exp(-20 * (x + 1/4).^2) + (sin(30 * x) .* exp(-20 * (x - 1/4).^2)) / 4);
-x = [-1:0.01:1];
+x = -1:0.01:1; % Quan creem un vector no cal posar []
 
 %visualitzem la funcio
 figure (1)
 plot (x,f(x))
-hold on
+hold off
 
 
-%% B) executem el qrSolver per trobar els coeficients de l'aproximacio de f mitjançant la matriu de Vandermonde
+%% B) executem el qrSolver per trobar els coeficients de l'aproximacio de f mitjanï¿½ant la matriu de Vandermonde
 
 casos=[[14,7]; [28,14]; [28,20]; [64,30]];
 ii=1;
@@ -25,8 +25,8 @@ for cas = casos'
     
     % Creem lel sistema
     
-    jota = [0:1:n];
-    xj = [-1 + 2 * jota / (n)]; %nodes equispaiats
+    jota = 0:1:n;
+    xj = -1 + 2 * jota / (n); %nodes equispaiats
     
     V = fliplr(vander(xj)); %Creem la Vandermonde
     V = V(:,1:m); %retallem la matriu per tal de tenir els polinomis fins a grau m
@@ -37,8 +37,8 @@ for cas = casos'
     
     coef = qrSolve(qrFact(V), efes');
     
-    p=fliplr(vander(x)); % fem la Vandermonde pero en un seguit de punts més ampli per tal de millorar la presició 
-    efesinterpolador=p(:,1:m)*coef'; % és  l'equivalent al vector de efes pero extret de la interpolacio
+    p=fliplr(vander(x)); % fem la Vandermonde pero en un seguit de punts mï¿½s ampli per tal de millorar la presiciï¿½ 
+    efesInterpolador=p(:,1:m)*coef'; % ï¿½s  l'equivalent al vector de efes pero extret de la interpolacio
     
     %FUNCIO A ESTUDIAR:
     f = @(x)(exp(-20 * (x + 1/4).^2) + (sin(30 * x) .* exp(-20 * (x - 1/4).^2)) / 4);
@@ -47,11 +47,11 @@ for cas = casos'
     ii= 1 + ii;
     figure(ii)
     plot(x,f(x))
-    hold on
-    plot(x,efesinterpolador)
-    
-    
-    
+    hold on;
+    plot(x,efesInterpolador) % Manera nuria
+    hold on;
+    plot(x, polyval(flip(coef), x)) % Matlab vol els coeficients del polinomi al reves.
+    hold off;
 end
 
 
@@ -98,7 +98,7 @@ end
     
 
 %COMENTARI FINAL: Observem que amb els nodes equispaiats en els extrems (-1
-%i 1) la interpolació falla i amb els de chebycheb no, tal com vam estudiar
+%i 1) la interpolaciï¿½ falla i amb els de chebycheb no, tal com vam estudiar
 %que passava l'any passat.
     
     
