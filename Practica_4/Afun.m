@@ -1,7 +1,6 @@
 function Ax = Afun(x)
-    disp("entras")
-    disp(x)
-    R = 3; V = 1; n = 30; Ax = [];
+
+    R = 3; n = 30; Ax = [];
     Ax = [Ax; 2 * R * x(1) + R * x(2)];
     Ax = [Ax; x(1) - x(2) - x(3)];
 

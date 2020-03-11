@@ -2,12 +2,13 @@ close all;
 clear all;
 format long g;
 
-N = 29;
+n = 30;
 R = 3;
 VOLTATGE = 5;
 
-A = zeros(N);
 
+N = 2 * n - 1;
+A = zeros(N);
 %Ara ho fem com la practica 1:
 for i = 1:1:N
     %Si es parell:
@@ -30,21 +31,19 @@ A(1, 2) = R;
 v = [0 * (1:N - 2), -R, 3 * R];
 A(N, :) = v;
 % Muntem els termes independents
-V = zeros(N, 1);
+
+n = 30;
+V = zeros(2 * n - 1, 1);
 V(1) = VOLTATGE;
 
 % Aquestes dos linies son les que solucionen!!
-disp("finsAuqui")
-disp(V)
-[x4, k] = gmres(Afun, V, 1, 100);
+[x4, k] = gmres(@Afun, V, 1e-10, 100); % Se li ha de passar un funciton handler.
 
 [P, L, U] = PLU(A);
 x1 = pluSolve(L, U, P, V);
 
 disp(x4);
 disp(x1);
-disp(abs(x4 - x1));
-figure()
-plot(1:1:N, x)%Si que s'observa una disminucio de la intensitat
-ylabel('Intensitat')
-xlabel('k')
+%disp(abs(x4 - x1));
+
+
