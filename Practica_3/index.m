@@ -20,8 +20,8 @@ semilogy(N,error)
 hold on;
 
 %Producte Q'Q hauria de donar la identitat perq els vectors columna son una
-%base ortonormal.
-%No és aixi ja que els vectors de la matriu de hilbert es gran i densa i es
+%base ortonormal. (Estem fent els productes escalars entre bases)
+%No ï¿½s aixi ja que els vectors de la matriu de hilbert es gran i densa i es
 %probable que siguin practimant paralels
 
 %% B)
@@ -40,8 +40,9 @@ semilogy(N,error)
 hold on;
 
 %% C)
-
-error=[];
+% Hauriem de demanar el esoai abans per guanyar rendiment (es bastant inutil)
+%error=zeros(N);
+error = []
 
 for n = N
     hilbertt = hilb(n); %fem la matriu de Hilbertt

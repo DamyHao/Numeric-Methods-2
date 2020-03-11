@@ -1,4 +1,5 @@
 function [Q,R] = gsr(A)
+    % Amb reorthoganilzation
 
 [n, m] = size(A);
 R = zeros(m);
@@ -13,7 +14,7 @@ for k = 2:m
     
     Q(:, k) = A(:, k) - Q(:, 1:k - 1) * R(1:k - 1, k);
     
-    S(1:k-1,k) = Q(:,1:k-1)'*Q(:, k); % matriu que conté els productes <q_j,q(tilde)_k)
+    S(1:k-1,k) = Q(:,1:k-1)'*Q(:, k); % matriu que contï¿½ els productes <q_j,q(tilde)_k)
     
     Q(:, k) = Q(:, k) - Q(:,1:k-1)*S(1:k-1, k);
     
