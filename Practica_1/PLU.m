@@ -1,5 +1,7 @@
 function [P, L, U] = PLU(A)
     % PLU Factoritza una matriu A en una triangular superior i una inferior. Retorna un vector P en que a cada posicio hi ha la fila que shi ha de posar. Servira per permutar els coeficients indepents.
+    % L Matru lower en que la diagonal son 1 i per sota hi guardem les ms.
+    % U Matriu com si li haguesim fet gauss.
 
     %Primer sabem la dimensio de la matriu
     [dim, n] = size(A);
@@ -22,13 +24,13 @@ function [P, L, U] = PLU(A)
         %cap a baix, hem de fer aquestes sumes a maxIndex per obtenir la posicio en el vector columna
         P(i) = maxIndex;
         U([i maxIndex], :) = U([maxIndex i], :); %fila maxIndex passa a ser la fila i, i viseversa
-        L([i maxIndex], :) = L([maxIndex i], :);
+        L([i maxIndex], 1:i-1) = L([maxIndex i], 1:i-1); % En la triangular inferior no podem agafar tota la fila al complet ja que no tindra els 0 que desitgem
 
         for j = i + 1:1:dim%j=files
             %Per cada fila (de 2 a dim) fem apareixer un zero
             %Primer element de la fila
-            L(j, i) = U(j, i) / U(i, i);
-            U(j, :) = U(j, :) - (U(j, i) / U(i, i)) * U(i, :);
+            L(j, i) = U(j, i) / U(i, i); % Matru lower en que la diagonal son 1 i per sota hi guardem les ms.
+            U(j, i:dim) = U(j, i:dim) - (U(j, i) / U(i, i)) * U(i, i:dim);
 
         end
 

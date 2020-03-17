@@ -38,8 +38,8 @@ for n = 10:5:10%30
     V(1) = VOLTATGE;
 
     % Aquestes dos linies son les que solucionen!!
-    %[P, L, U] = PLU(A); TENIM EL PLU ESPATLLAT!
-    [P, L, U] = PLUAlvaro(A);
+    [P, L, U] = PLU(A); %TENIM EL PLU ESPATLLAT!
+    %[P, L, U] = PLUAlvaro(A);
     x = pluSolve(L, U, P, V);
     disp(x')
 
@@ -89,7 +89,7 @@ V(1) = VOLTATGE;
 x = pluSolve(L, U, P, V);
 
 figure()
-loglog(1:1:N, x)%Aquet plot no caldria, ya que nomes fem servir I(1)
+loglog(1:1:N, x)% Aquet plot no caldria, ya que nomes fem servir I(1)
 ylabel('Intensitat')
 xlabel('k')
 
