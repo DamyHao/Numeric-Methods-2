@@ -3,13 +3,14 @@ clear all;
 format long g;
 
 N = 11;
-R = 1;
+% PERQUE NOMES FUNCIONA AMB R= 1????
+R = 3;
 VOLTATGE = 5;
 
 %% a)
 
-for n = 5:5:30
-    N = 2 * n - 1 ;
+for n = 10:5:10%30
+    N = 2 * n - 1;
     A = zeros(N);
     % Muntem la matriu (les matrius que muntem han de ser amb files imparells sempre)
     for i = 1:1:N
@@ -37,8 +38,13 @@ for n = 5:5:30
     V(1) = VOLTATGE;
 
     % Aquestes dos linies son les que solucionen!!
-    [P, L, U] = PLU(A);
+    %[P, L, U] = PLU(A); TENIM EL PLU ESPATLLAT!
+    [P, L, U] = PLUAlvaro(A);
     x = pluSolve(L, U, P, V);
+    disp(x')
+
+    matlabSolution = A\V;
+    disp(matlabSolution);
 
     if (n == 10)
         figure()
@@ -89,4 +95,4 @@ xlabel('k')
 
 % Veiem que la primera intensitat es 1.
 disp(x(1));
-disp(VOLTATGE/x(1));
+disp(VOLTATGE / x(1));

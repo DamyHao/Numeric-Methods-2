@@ -3,9 +3,10 @@ clear all;
 format long g;
 
 n = 30;
-R = 3;
+R = 1;
 VOLTATGE = 5;
 
+addpath('../Practica_1');
 
 N = 2 * n - 1;
 A = zeros(N);
@@ -22,7 +23,6 @@ for i = 1:1:N
         A(i, i) = 2 * R;
         A(i, i + 1) = R;
     end
-
 end
 
 A(1, 1) = 2 * R;
@@ -32,18 +32,23 @@ v = [0 * (1:N - 2), -R, 3 * R];
 A(N, :) = v;
 % Muntem els termes independents
 
-n = 30;
-V = zeros(2 * n - 1, 1);
+V = zeros(N, 1);
 V(1) = VOLTATGE;
+%TODO: EL SISTEMA NO ES RESOL SI LI POSEM RESISTENCIA 3
+[P, L, U] = PLU(A);
+
+x = pluSolve(L, U, P, V);
+disp(x')
+
 
 % Aquestes dos linies son les que solucionen!!
 [x4, k] = gmres(@Afun, V, 1e-10, 100); % Se li ha de passar un funciton handler.
 
-[P, L, U] = PLU(A);
-x1 = pluSolve(L, U, P, V);
-
 disp(x4);
-disp(x1);
-%disp(abs(x4 - x1));
+disp(size(x4))
+
+disp(abs(x4 - x'));
+
+solucioReal = A\V;
 
 
