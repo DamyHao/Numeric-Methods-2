@@ -20,8 +20,8 @@ for i = 1:1:15
     disp(v)
     disp(feval(funcioP5, v))
     [XK, resd, it] = newtonnAlvaro(v, 10^-8, 100, funcioP5);
-    disp(size(XK))
-    disp(it)
+    disp(size(XK));
+    disp(it);
 
     v = XK(:, end);
 
