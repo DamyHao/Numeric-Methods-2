@@ -6,25 +6,46 @@
 % method to compute the coordinates vl(T) and vg(T), along with the
 % corresponding pressure. When changing T, use the previous result as
 % initial guess. For T = 0.99, use v(0) = 0.8 and v(0) = 1.2.
+format long g;
+close all;
+clear all;
 
-t = [0.99:-0.01:0.85];
+Ts = 0.99:-0.01:0.85;
 
 v0 = [0.8; 1.2];
 
 v = [v0]; V = [v0];
 
-for i = 1:1:15
-    T = t(i);
-    disp(i)
+xarxa = 0.3:0.005:5;
+
+
+figure();
+for T = Ts
     funcioP5 = @(x)([log((3 * x(2) - 1) / (3 * x(1) - 1)) + 9 / (4 * T) * (1 / x(2) - 1 / x(1)) - 1 / (3 * x(2) - 1) + 1 / (3 * x(1) - 1), (8 * T) / 3 * (1 / (3 * x(2) - 1) - 1 / (3 * x(1) - 1)) - 1 / x(2)^2 + 1 / x(1)^2]);
-    disp(v)
-    disp(feval(funcioP5, v))
+    vanDerWaals = @(vol)((8*T./(3.*vol-1))-(3./(vol.^2)));
+
+    plot(xarxa, vanDerWaals(xarxa));
+    text(1.1, vanDerWaals(1.1), ['T = ', num2str(T)], 'FontSize', 6);
+    axis([0.5, 3.5 , 0, 1.5]);
+    hold on;
+
+
     [XK, resd, it] = newtonnAlvaro(v, 10^-8, 100, funcioP5);
-    disp(size(XK));
-    disp(it);
-
     v = XK(:, end);
+    V = [V, v];
 
-    V = [V', XK(end)];
+    plot(v(1), vanDerWaals(v(1)), '-o');
+    hold on
+
+    plot(v(2), vanDerWaals(v(2)), '-o');
+    hold on
+
+
 
 end
+
+%plot(V(1,:), vanDerWaals(V(1,:)), '-o')
+%hold on
+%plot(V(2,:), vanDerWaals(V(2,:)),  '-o')
+
+hold off

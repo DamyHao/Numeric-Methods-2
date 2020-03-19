@@ -21,7 +21,7 @@ function [XK, resd, it] = newtonn(x0, tol, itmax, fun)
     xk = x0; XK = [xk]; resd = [norm(feval(fun, xk))]; it = 1; tolk = 1;
 
     while it < itmax && tolk > tol
-        disp(it)
+
         J = jaco(fun, xk);
 
         fk = feval(fun, xk);
