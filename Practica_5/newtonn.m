@@ -17,27 +17,27 @@ function [XK, resd, it] = newtonn(x0, tol, itmax, fun)
     % it = number of required iterations to satisfy tolerance
 
     addpath('../Practica_1'); % to have PLU and pluSolve and BS
+    % Atencio, pirmer comprobara a a la carpeta actual si hi son
 
-    xk = x0; XK = [xk]; resd = [norm(feval(fun, xk))]; it = 1; tolk = 1;
+    xk = [x0]; 
+    XK = [x0]; 
+    resd = [norm(feval(fun, xk))]; 
+    it = 1; 
+    tolk = 1;
 
     while it < itmax && tolk > tol
-
-        J = jaco(fun, xk);
-
-        fk = feval(fun, xk);
-
-        [P, L, U] = PLU(J);
-
-        Dx = pluSolve(L, U, P, -fk);
-
+        J = jaco(fun, xk); % Jacobia en la posicio anterior
+        fk = feval(fun, xk); 
+        [P, L, U] = PLUAlvaro(J);
+        %[L, U ,P] = lu(J,'vector');
+        % TODO: el nostre pluSolve no funciona
+        %Dx = pluSolve(L, U, P, (-fk)'); %Solucio de la ecuacio J*Dx = -fk
+        Dx = J\(-fk)';
         xk = xk + Dx;
-
-        XK = [XK, xk];
-
-        tolk = norm(XK(:, end) - XK(:, end - 1));
-
-        it = it + 1;
-
+        XK = [XK xk];
         resd = [resd, norm(fk)];
+        tolk = norm(XK(:, end) - XK(:, end - 1));
+        it = it + 1;
+        
 
     end
