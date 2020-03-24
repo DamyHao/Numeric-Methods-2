@@ -18,7 +18,8 @@ v = [v0]; V = [v0];
 
 xarxa = 0.3:0.005:5;
 
-colors = jet(length(Ts)); % Colors arc de sant marti
+colors = jet(length(Ts)); % Colors arc de sant marti tants colors com llargada vector Ts
+colors=fliplr(colors);
 ii = 0;
 figure();
 for T = Ts
