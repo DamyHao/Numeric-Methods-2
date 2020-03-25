@@ -16,7 +16,7 @@ function [XK, resd, it] = newtonn(x0, tol, itmax, fun)
     % as we are looking for f(x)=0
     % it = number of required iterations to satisfy tolerance
 
-    addpath('../Practica_1'); % to have PLU and pluSolve and BS
+    %addpath('../Practica_1'); % to have PLU and pluSolve and BS
     % Atencio, pirmer comprobara a a la carpeta actual si hi son
 
     xk = [x0]; 
@@ -28,10 +28,12 @@ function [XK, resd, it] = newtonn(x0, tol, itmax, fun)
     while it < itmax && tolk > tol
         J = jaco(fun, xk); % Jacobia en la posicio anterior
         fk = feval(fun, xk); 
-        [P, L, U] = PLUAlvaro(J);
-        %[L, U ,P] = lu(J,'vector');
+        %[P, L, U] = PLUAlvaro(J);
+        %[L1, U1 ,P] = lu(J,'vector');
+        %disp(L1-L)
+        %disp(U1-U)
         % TODO: el nostre pluSolve no funciona
-        %Dx = pluSolve(L, U, P, (-fk)'); %Solucio de la ecuacio J*Dx = -fk
+        %Dx = pluSolve(L, U, P, (-fk)); %Solucio de la ecuacio J*Dx = -fk
         Dx = J\(-fk)';
         xk = xk + Dx;
         XK = [XK xk];
