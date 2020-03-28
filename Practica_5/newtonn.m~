@@ -34,13 +34,21 @@ function [XK, resd, it] = newtonn(x0, tol, itmax, fun)
     while it < itmax && tolk > tol
         J = jaco(fun, xk); % Jacobia en la posicio anterior
         fk = feval(fun, xk); 
-        %[P, L, U] = PLUAlvaro(J);
-       
-        %Dxp = pluSolve(L, U, P, (-fk)'); %Solucio de la ecuacio J*Dx = -fk
+        [P, L, U] = PLUAlvaro(J);
+        %[L1, U1 ,P] = lu(J,'vector');
+        %disp(L1-L)
+        %disp(U1-U)
+        % TODO: el nostre pluSolve no funciona
+        Dxplu = pluSolve(L, U, P, (-fk)'); %Solucio de la ecuacio J*Dx = -fk
+        UR = myqr(J);
+        Dxqr = qrSolveAlvaro(UR, (-fk)');
 
         Dx = J\(-fk)';
+
+
+        disp("Diferencia entre Backslash i qrAlvaro");
         xk = xk + Dx;
-        XK = [XK, xk];
+        XK = [XK xk];
         resd = [resd, norm(fk)];
         tolk = norm(XK(:, end) - XK(:, end - 1));
         it = it + 1;
