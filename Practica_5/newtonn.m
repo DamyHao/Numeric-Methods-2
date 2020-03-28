@@ -15,8 +15,14 @@ function [XK, resd, it] = newtonn(x0, tol, itmax, fun)
     % Resd = resulting residuals of iteration: ||F_k||, we want it to be 0,
     % as we are looking for f(x)=0
     % it = number of required iterations to satisfy tolerance
-
-    %addpath('../Practica_1'); % to have PLU and pluSolve and BS
+    format long
+    %Utilitzara la funcio que estigui cirdad la ultima
+    %En aquet cas les prioritaries seran les de la practica2.
+    addpath('../Practica_4');
+    addpath('../Practica_2');
+    addpath('../Practica_1'); % to have PLU and pluSolve and BS
+    
+    
     % Atencio, pirmer comprobara a a la carpeta actual si hi son
 
     xk = [x0]; 
@@ -28,13 +34,22 @@ function [XK, resd, it] = newtonn(x0, tol, itmax, fun)
     while it < itmax && tolk > tol
         J = jaco(fun, xk); % Jacobia en la posicio anterior
         fk = feval(fun, xk); 
-        %[P, L, U] = PLUAlvaro(J);
+        [P, L, U] = PLUAlvaro(J);
         %[L1, U1 ,P] = lu(J,'vector');
         %disp(L1-L)
         %disp(U1-U)
         % TODO: el nostre pluSolve no funciona
-        %Dx = pluSolve(L, U, P, (-fk)); %Solucio de la ecuacio J*Dx = -fk
+        Dxplu = pluSolve(L, U, P, (-fk)'); %Solucio de la ecuacio J*Dx = -fk
+        UR = myqr(J);
+        Dxqr = qrSolveAlvaro(UR, (-fk)');
+
         Dx = J\(-fk)';
+
+
+        disp("Diferencia entre Backslash i qrAlvaro");
+        disp(norm(Dx-Dxqr));
+        disp("Diferencia entre backslash i plu nostre")
+        disp(norm(Dx-Dxplu));
         xk = xk + Dx;
         XK = [XK xk];
         resd = [resd, norm(fk)];

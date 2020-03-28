@@ -1,20 +1,14 @@
-function x = BS(UT, b) 
+function x = BS(A, b)
+    n = length(A);
+    x = zeros(n, 1);
 
-[dim, n] = size(UT);
-[res, dimB] = size(b);
+    for i = n:-1:1
+        sum = 0;
 
-if dim~= n; error('NECESSITA UNA MATRIU QUADRADA. Revisar els arguments'); end
-if dim~= res; error('El vector b i la matriu UT no son del mateix tamany. Revisar els arguments'); end 
+        for j = i + 1:n
+            sum = sum + A(i, j) * x(j);
+        end
 
-x=[0*(1:n-1),b(n)/UT(n,n)];
-
-for i=n:-1:1
-    sum = 0;
-    
-    for j=n:-1:i+1
-        sum = sum + UT(i,j)*x(j);  
     end
-    x(i)=(1/UT(i,i))*(b(i)-sum);
-end
-end
 
+end

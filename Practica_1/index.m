@@ -87,6 +87,9 @@ V(1) = VOLTATGE;
 % Aquestes dos linies son les que solucionen!!
 [P, L, U] = PLU(A);
 x = pluSolve(L, U, P, V);
+disp("Norma")
+disp(norm(A\V - x))
+
 
 figure()
 loglog(1:1:N, x)% Aquet plot no caldria, ya que nomes fem servir I(1)
