@@ -49,8 +49,6 @@ plot(alphaZeros,Det0,'*')
 disp('The alpha values that make zero the determinant are more less:')
 disp(alphaZeros)
 
-%
-
 
 %% Section B)
 %addpath('..Practica_5')
@@ -99,7 +97,7 @@ plot(alphasol, sol(2,:),'o','Color','y');
 axis([0 2 -0.8 1.6])
 title('Phi2 as a function of alpha')
 xlabel('Alpha')
-ylabel('Phi1')
+ylabel('Phi2')
 
 figure (3)
 plot(alphasol, sol(2,:),'o','Color','y');
@@ -107,7 +105,11 @@ hold on
 plot(alphasol, sol(1,:),'o','Color','blue')
 axis([0 2 -0.8 1.6])
 title('Angles of rotation as a function of alpha')
-legend('Phi1','Phi2','Location','southwest')
+legend('Phi2','$\hat{\psi}$','Location','southwest','Interpreter','latex')
 xlabel ('Alpha')
 ylabel('Phi')
+hold off
+%<<mates.jpg>>
 
+%img = imread('mates.jpg');
+%image(img);
