@@ -2,7 +2,6 @@ function [P, L, U] = PLU(A)
     % PLU Factoritza una matriu A en una triangular superior i una inferior. Retorna un vector P en que a cada posicio hi ha la fila que shi ha de posar. Servira per permutar els coeficients indepents.
     % L Matru lower en que la diagonal son 1 i per sota hi guardem les ms.
     % U Matriu com si li haguesim fet gauss.
-    format long
     %Primer sabem la dimensio de la matriu
     [dim, n] = size(A);
 

@@ -15,12 +15,8 @@ function [XK, resd, it] = newtonn(x0, tol, itmax, fun)
     % Resd = resulting residuals of iteration: ||F_k||, we want it to be 0,
     % as we are looking for f(x)=0
     % it = number of required iterations to satisfy tolerance
-    format long
     %Utilitzara la funcio que estigui cirdad la ultima
     %En aquet cas les prioritaries seran les de la practica2.
-    addpath('../Practica_4');
-    addpath('../Practica_2');
-    addpath('../Practica_1'); % to have PLU and pluSolve and BS
     
     
     % Atencio, pirmer comprobara a a la carpeta actual si hi son
