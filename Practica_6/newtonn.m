@@ -18,9 +18,9 @@ function [XK, resd, it] = newtonn(x0, tol, itmax, fun)
     format long
     %Utilitzara la funcio que estigui cirdad la ultima
     %En aquet cas les prioritaries seran les de la practica2.
-    addpath('../Practica_4');
-    addpath('../Practica_2');
-    addpath('../Practica_1'); % to have PLU and pluSolve and BS
+%     addpath('../Practica_4');
+%     addpath('../Practica_2');
+%     addpath('../Practica_1'); % to have PLU and pluSolve and BS
     
     
     % Atencio, pirmer comprobara a a la carpeta actual si hi son
