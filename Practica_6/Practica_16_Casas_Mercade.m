@@ -53,7 +53,7 @@ disp(alphaZeros)
 %% Section B)
 %addpath('..Practica_5')
 
-alphas = 0:0.001:2;
+alphas = 0:0.1:2;
 % Dominis dels angles
 dom1 = [0, pi/2];
 dom2 = [-pi/2, pi/2];
@@ -74,10 +74,15 @@ for alpha = alphas
         %x*(a-b) - a
         
         [XK, resd, it] = newtonn(phi0, 1e-6, 100, f);
-        
+        % Comprobar que estigui dintre el domini
         if XK(1, end) > dom1(1) && XK(1,end) < dom1(2) && XK(2,end) > dom2(1) && XK(2, end) < dom2(2)
-           sol=[sol, XK(:,end)];
-           alphasol=[alphasol, alpha];
+            % Comprobar que no sigui 0:
+            if XK(1, end) ~= 0 XK(2,end) ~= 0
+                sol=[sol, XK(:,end)];
+                alphasol=[alphasol, alpha];
+            end
+
+         
         end
          
          
@@ -109,7 +114,38 @@ legend('Phi2','$\hat{\psi}$','Location','southwest','Interpreter','latex')
 xlabel ('Alpha')
 ylabel('Phi')
 hold off
-%<<mates.jpg>>
+%<<mates.jpg>> 
+
 
 %img = imread('mates.jpg');
 %image(img);
+
+%% Section c)
+
+funAlpha =@(y)([tan(y(1))-y(3)*(2*sin(y(1)) +sin(y(2))) ; tan(y(2)) - 2*y(3)*(sin(y(1)) + sin(y(2)))]);
+%Agafem les primeres solucions de l'esquerra:
+y0 = [sol(:, 1); alphasol(1)];
+
+y1 = [sol(:, 2); alphasol(2)];
+y = y1; % Nomes per la entrada al while
+s = 1;
+tol = 1e-6;
+itmax = 100;
+Y=[];
+
+while s > 0 && y(3) < 2.1 && y(3) > 0
+    [y, iconv] = continuationStep(funAlpha, y0, y1, s, tol, itmax);
+ 
+    if iconv == 1 % No hem aconseguit solució
+        s = s - 0.1;
+    else
+        y0 = y1;
+        y1 = y;
+        Y=[Y , y]; %solucions
+    end
+    y(3)
+end
+size(Y)
+
+figure(4);
+plot(Y(3, :), Y(1,:));
