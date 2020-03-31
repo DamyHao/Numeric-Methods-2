@@ -1,6 +1,6 @@
 function x = FS(A, b)
 
-[dim, n] = size(A)
+[dim, n] = size(A);
 x = zeros(n, 1);
 
 if dim~= n; error('NECESSITA UNA MATRIU QUADRADA. Revisar els arguments');
