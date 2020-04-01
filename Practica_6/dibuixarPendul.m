@@ -1,4 +1,4 @@
-function succes = dibuixarPendul(phi1, phi2, l) % A intro
+function succes = dibuixarPendul(phi1, phi2, l)
 % Funcio que fa un plot de un pendul doble amb els angles indicats i la longitud de les barres indicada (les dos igual)
 % a entrar els angels respecte la vertical en radiants
 

@@ -110,27 +110,29 @@ ylabel('Phi')
 hold off
 
 
-%% Section c)
+%% Section C)
 
-
-%Agafem les primeres solucions de la drieta:
 
 %As it has been seen analitically there are two alpha's that make zero the
-%jocobian determinant, this alphas are 0.293 and 1.707, so the in order to
+%jacobian determinant, this alphas are 0.293 and 1.707, so the in order to
 %obtand all the solutions with the secant continuation step we will take 3
-%difrent y0 and y1 at the right plot of the anterious exercise
+%difrent y0 and y1 at the right plot of the previous exercise.
+
 funAlpha = @(y)([tan(y(1)) - y(3) * (2 * sin(y(1)) + sin(y(2))); tan(y(2)) - 2 * y(3) * (sin(y(1)) + sin(y(2)))]);
 figure(4)
 epsilon = 0.01;
-alphas = [2 - epsilon, 2 - 2 * epsilon];
-MP = [[]];
+alphas = [2 - epsilon, 2 - 2 * epsilon]; %the two alpha points where the secant will start
+MP = []; %Matrice where the 3 diffrent pair of solutions needed for the secant will be saved.
 
-dom1 = [0, pi / 2];
-dom2 = [-pi / 2, pi / 2];
+dom1 = [0, pi / 2]; %domain of phi1
+dom2 = [-pi / 2, pi / 2]; %domain of phi2
 
-% Trobem ara dos solucions per dos alphas diferents per tirar el continuationStep:
-% Ens guiem per el plot fet anteriorment per trobar les solucions diferents que volem
-% Sabem que hi haura 3 solucions: La 0 (trivial), una per sobre 0.6 i una per sota. Trobarem aquestes dos ultimes
+
+
+%As seen in the plot of the previous section for the two alpha chosen to start de secant we'll
+%have the 0 solution (trivial), two solution bigger than 0.6 and two more
+%below 0.6, we use that information to obtain them:
+
 for jj = 1:2
     sol1 = 0; % Si es 0 es que falta trobarla:
     sol2 = 0;
@@ -150,7 +152,7 @@ for jj = 1:2
                 %Classificar si es de dalt o de sota
                 if XK(1, end) > 0.6
                     MP(:, jj) = [XK(:, end); alpha];
-                    sol1 = 1;
+                    sol1 = 1; % He trobat la solucio 1
                 else
                     MP(:,jj+2) = [XK(:, end); alpha];
                     sol2 = 1;
@@ -161,21 +163,23 @@ for jj = 1:2
 end
 
 
-% Hi afegim la solució 0,0 tambe:
+% We add the (0, 0) trivial solutions
 MP(:,5) = [0; 0; 2-epsilon];
 MP(:,6) = [0; 0; 2-2*epsilon];
 
-%Matriu dels punts on s'iniciaran els contSteps cap a la esquerra:
-% Solucions:
-MP
 
-s = 1; % En un principi utilitzarem s = 1 per mantenir una separacio mes o menys similar entre les solucions.
-% Aquesta separacio vindra definida per el parametre epsilon declarat anteriorment.
+disp('Initial values for the secant')
+disp(MP)
+
+s = 1; % In principle we will use s = 1 to mantain an approximate regular space between solutions.
+% The distrance between solution will be given by the epsilon parameter
+% defined before.
+
 tol = 1e-6;
 itmax = 100;
 Y = [];
 
-for it = 1:2:length(MP)% Tirarem el continuation step en les 3 branques de solucions trobades:
+for it = 1:2:length(MP)% We launch the countinuation step at the 3 branches of solutions found
     y0 = MP(:, it);
     y1 = MP(:, it + 1);
     y = y1;
@@ -183,13 +187,13 @@ for it = 1:2:length(MP)% Tirarem el continuation step en les 3 branques de soluc
     while y(3) < 2 && y(3) > 0 && s > 0
         [y, iconv] = continuationStep(funAlpha, y0, y1, s, tol, itmax);
 
-        if iconv == 1 % No hem aconseguit solució i ajustem s
+       if iconv == 1 % No hem aconseguit solució i ajustem s
             s = s - 0.1; % Si la s arriba a 0 desistirem i no buscarem mes solucions
         else
             y0 = y1;
             y1 = y;
             % Nomes les guardem si estan dintre el domini
-            if y(1, end) > dom1(1) && y(1, end) < dom1(2) && y(2, end) > dom2(1) && y(2, end) < dom2(2)
+            if y(1, end) >= dom1(1) && y(1, end) <= dom1(2) && y(2, end) >= dom2(1) && y(2, end) <= dom2(2)
                 Y = [Y, y]; %solucions
             end
         end
@@ -198,12 +202,18 @@ for it = 1:2:length(MP)% Tirarem el continuation step en les 3 branques de soluc
     end
 end
 
+title('Plot of the solution as a function of alpha using secant continuation step');
+xlabel('Alpha')
+ylabel('Phi')
 hold off
 
 
-% Dibuix del pendul en alfa = 2.14:
-% Com que volem una alfa determinada utilitzarem el metode de newton amb exploracio i 
-% no el del continuationStep per trobar les solucions:
+%% Section C: Optional part
+% Drawing of the pendulum at alfa = 2.14
+
+%As we want the plot at a specific alpha we'll use the newton method in
+%order to explore and not the secant continuation step to find solutions.
+
 figure(5)
 aleatoryTimes = 1:1:1000;
 alpha = 2.14;
@@ -213,18 +223,24 @@ for i = aleatoryTimes
     phi0 = aleatory .* factor - a;
     %x*(a-b) - a
     [XK, resd, it] = newtonn(phi0, 1e-16, 100, f);
-    % Comprobar que estigui dintre el domini
-    if XK(1, end) > dom1(1) && XK(1, end) < dom1(2) && XK(2, end) > dom2(1) && XK(2, end) < dom2(2)
+    if XK(1, end) >= dom1(1) && XK(1, end) <= dom1(2) && XK(2, end) >= dom2(1) && XK(2, end) <= dom2(2)
             plot(alpha, XK(1, end), '*');  %phi1
             plot(alpha, XK(2,end), '*') %phi2
             hold on   
     end
 end
+
+title('Exploration at alpha = 2.14 using newton with aleatory initial points');
+xlabel('Alpha')
+ylabel('Phi')
 hold off
 
-% Canviem ara la direccio en la que tirem el continuationStep i anem cap a la dreta.
-% Posarem com a maxim alfa = 3;
+
+% We change the direction at we launch the secant continuation step, now we
+% go to the right
+% We will get to alpha = 3;
 maxAlfa = 3;
+Y = [];
 perDibuixar = [];
 
 figure;
@@ -232,7 +248,6 @@ figure;
 for it = 1:2:length(MP)
     y1 = MP(:, it); % Per ferho cal canviar el sentit, ja que ara anirem cap a la dreta
     y0 = MP(:, it + 1);
-
     y = y0;
     
     sensePintar = 1;
@@ -245,7 +260,7 @@ for it = 1:2:length(MP)
             y0 = y1;
             y1 = y; 
             Y = [Y, y]; %solucions
-            % Pintarem el pendul solament una vegada:
+            % When we found the pendulum we save the solutions to draw.
             if abs(alpha-y(3)) < epsilon && sensePintar == 1
                 perDibuixar = [perDibuixar, y];
                 sensePintar = 0;
@@ -257,18 +272,44 @@ for it = 1:2:length(MP)
     end
     
 end
+
+title('Exploration from alpha = 2.14 to alpha = 3 using secant continuation step');
+xlabel('Alpha')
+ylabel('Phi')
 hold off
 
 % Dibuixem els pendols:
-for ii = perDibuixar
+for ii =perDibuixar
     figure;
     dibuixarPendul(ii(1), ii(2), 1);
+    title('Pendulum representation')
+    xlabel('x')
+    ylabel('y')
 end
 
+%{
+function succes = dibuixarPendul(phi1, phi2, l)
+% Funcio que fa un plot de un pendul doble amb els angles indicats i la longitud de les barres indicada (les dos igual)
+% a entrar els angels respecte la vertical en radiants
+
+h = plot(0, 0, 'MarkerSize', 30, 'Marker', '.', 'LineWidth', 2); %Guardem el objecte plot en una variable per utilitzar les seves propietats mes endavant
+
+range = 1.1 * (l + l); axis([-range range -range range]); axis square;
+
+set(gca, 'nextplot', 'replacechildren'); % Diem que en el seguent plot es pinti a partir d'on acaba l'anterior:
+
+Xcoord = [0, l * sin(phi1), l * sin(phi1) + l * sin(phi2)];
+Ycoord = [0, -l * cos(phi1), -l * cos(phi1) - l * cos(phi2)];
+set(h, 'XData', Xcoord, 'YData', Ycoord);
+drawnow;
+
+succes = 1;
+%}
 
 
-% Com es pot observar, les solucions continuen cap a la dreta amb normalitat. 
-% No es troben noves branques ni amb el continuationStep ni amb l'exploracio newton aleatoria
-% Per tant determinem que no hi ha noves branques.
-% Aixo es deu a que les noves branques nomes poden neixer quan el determinant del jacobia es 0.
-% Mirem com evoluciona el jacobia per alfas mes grans de dos i veiem que no torna a ser 0 (fet a l'exercici a)
+%As it can be seen, the solution to the right continue as theoretically
+%expected. We do not observe not new branches emerged using continuationStep and
+%neither using newton. This is because new branches appear when the
+%jacobian's determinan is zero, and from 2,14 on it is always non zero, as
+%it has been proved in the graph in section A.
+

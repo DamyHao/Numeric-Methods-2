@@ -52,7 +52,7 @@ disp(alphaZeros)
 
 %% Section B)
 %addpath('..Practica_5')
-x = 0.01
+x = 0.01;
 alphas = 0:x:2;
 % Dominis dels angles
 dom1 = [0, pi / 2];
@@ -71,17 +71,14 @@ for alpha = alphas
     for i = aleatoryTimes
         aleatory = rand(2, 1);
         phi0 = aleatory .* factor - a;
+        %Formula per canviar de escala i moure:
         %x*(a-b) - a
 
         [XK, resd, it] = newtonn(phi0, 1e-6, 100, f);
         % Comprobar que estigui dintre el domini
         if XK(1, end) > dom1(1) && XK(1, end) < dom1(2) && XK(2, end) > dom2(1) && XK(2, end) < dom2(2)
-            % Comprobar que no sigui 0:
-            if XK(1, end) ~= 0 XK(2, end) ~= 0
-                sol = [sol, XK(:, end)];
-                alphasol = [alphasol, alpha];
-            end
-
+            sol = [sol, XK(:, end)];
+            alphasol = [alphasol, alpha];
         end
 
     end
@@ -107,146 +104,216 @@ hold on
 plot(alphasol, sol(1, :), 'o', 'Color', 'blue')
 axis([0 2 -0.8 1.6])
 title('Angles of rotation as a function of alpha')
-legend('Phi2', '$\hat{\psi}$', 'Location', 'southwest', 'Interpreter', 'latex')
+legend('Phi2', 'Phi1', 'Location', 'southwest', 'Interpreter', 'latex')
 xlabel('Alpha')
 ylabel('Phi')
 hold off
-%<<mates.jpg>>
 
-%img = imread('mates.jpg');
-%image(img);
 
 %% Section c)
 
-funAlpha = @(y)([tan(y(1)) - y(3) * (2 * sin(y(1)) + sin(y(2))); tan(y(2)) - 2 * y(3) * (sin(y(1)) + sin(y(2)))]);
-%Agafem les primeres solucions de l'esquerra:
-
 
 %As it has been seen analitically there are two alpha's that make zero the
-%jocobian determinant, this alphas are 0.293 and 1.707, so the in order to
+%jacobian determinant, this alphas are 0.293 and 1.707, so the in order to
 %obtand all the solutions with the secant continuation step we will take 3
-%difrent y0 and y1, one for alpha 0 with its consequent angle solutions,
-%and the others near the two values of alpha mentioned before.
+%difrent y0 and y1 at the right plot of the previous exercise.
 
-
-
+funAlpha = @(y)([tan(y(1)) - y(3) * (2 * sin(y(1)) + sin(y(2))); tan(y(2)) - 2 * y(3) * (sin(y(1)) + sin(y(2)))]);
 figure(4)
-
-aleatoryTimes = 1:1:1000;
 epsilon = 0.01;
-alphas = [2 - epsilon, 2 - 2 * epsilon];
-sol11 = []; %y0 primera branca
-sol22 = [];
-sol21 = []; 
-sol12 = []; %y1 primera branca
+alphas = [2 - epsilon, 2 - 2 * epsilon]; %the two alpha points where the secant will start
+MP = []; %Matrice where the 3 diffrent pair of solutions needed for the secant will be saved.
 
-dom1 = [0, pi / 2];
-dom2 = [-pi / 2, pi / 2];
+dom1 = [0, pi / 2]; %domain of phi1
+dom2 = [-pi / 2, pi / 2]; %domain of phi2
 
-%Primera alpha:
-alpha = 2 - epsilon;
-f = @(phi)([(tan(phi(1)) - alpha * (2 * sin(phi(1)) + sin(phi(2)))), (tan(phi(2)) - 2 * alpha * (sin(phi(1)) + sin(phi(2))))]);
 
+
+%As seen in the plot of the previous section for the two alpha chosen to start de secant we'll
+%have the 0 solution (trivial), two solution bigger than 0.6 and two more
+%below 0.6, we use that information to obtain them:
+
+for jj = 1:2
+    sol1 = 0; % Si es 0 es que falta trobarla:
+    sol2 = 0;
+    alpha = 2 - jj*epsilon;
+    f = @(phi)([(tan(phi(1)) - alpha * (2 * sin(phi(1)) + sin(phi(2)))), (tan(phi(2)) - 2 * alpha * (sin(phi(1)) + sin(phi(2))))]);
     
-while isempty(sol11) || isempty(sol21)
-    aleatory = rand(2, 1);
-    phi0 = aleatory .* factor - a;
-    %x*(a-b) - a
-
-    [XK, resd, it] = newtonn(phi0, 1e-16, 100, f);
-    % Comprobar que estigui dintre el domini
-    if XK(1, end) > dom1(1) && XK(1, end) < dom1(2) && XK(2, end) > dom2(1) && XK(2, end) < dom2(2)
-        % I a mes que no sigui 0:
-        if XK(1, end) > epsilon || XK(1, end) < (-0.001)% El blau sempre esta per sobre i nomes cal que comprobem aquest
-            %Classificar si es de dalt o de sota
-            if XK(1, end) > 0.6
-                sol11 = [XK(:, end); alpha];
-            else
-                sol21 = [XK(:, end); alpha];
+    while sol1 == 0 || sol2 == 0
+        aleatory = rand(2, 1);
+        phi0 = aleatory .* factor - a;
+        %x*(a-b) - a
+    
+        [XK, resd, it] = newtonn(phi0, 1e-16, 100, f);
+        % Comprobar que estigui dintre el domini
+        if XK(1, end) > dom1(1) && XK(1, end) < dom1(2) && XK(2, end) > dom2(1) && XK(2, end) < dom2(2)
+            % I a mes que no sigui 0:
+            if XK(1, end) > epsilon || XK(1, end) < (-0.001)% El blau sempre esta per sobre i nomes cal que comprobem aquest
+                %Classificar si es de dalt o de sota
+                if XK(1, end) > 0.6
+                    MP(:, jj) = [XK(:, end); alpha];
+                    sol1 = 1; % He trobat la solucio 1
+                else
+                    MP(:,jj+2) = [XK(:, end); alpha];
+                    sol2 = 1;
+                end
             end
         end
-
     end
 end
 
 
-%Segon alpha:
-alpha = 2 - 2*epsilon;
-f = @(phi)([(tan(phi(1)) - alpha * (2 * sin(phi(1)) + sin(phi(2)))), (tan(phi(2)) - 2 * alpha * (sin(phi(1)) + sin(phi(2))))]);
-
-while isempty(sol12) || isempty(sol22)
-    aleatory = rand(2, 1);
-    phi0 = aleatory .* factor - a;
-    %x*(a-b) - a
-
-    [XK, resd, it] = newtonn(phi0, 1e-16, 100, f);
-    % Comprobar que estigui dintre el domini
-    if XK(1, end) > dom1(1) && XK(1, end) < dom1(2) && XK(2, end) > dom2(1) && XK(2, end) < dom2(2)
-        % I a mes que no sigui 0:
-        if XK(1, end) > epsilon || XK(1, end) <- epsilon% El blau sempre esta per sobre i nomes cal que comprobem aquest
-
-            if XK(1, end) > 0.6
-                sol12 =  [XK(:, end); alpha];
-            else
-                sol22 = [XK(:, end); alpha];
-            end
-
-        end
-
-    end
-end
+% We add the (0, 0) trivial solutions
+MP(:,5) = [0; 0; 2-epsilon];
+MP(:,6) = [0; 0; 2-2*epsilon];
 
 
+disp('Initial values for the secant')
+disp(MP)
 
+s = 1; % In principle we will use s = 1 to mantain an approximate regular space between solutions.
+% The distrance between solution will be given by the epsilon parameter
+% defined before.
 
-
-y0 = sol11; %Y0(:, i);
-y1 = sol12; %Y1(:, i);
-y = y1;
-s = 1;
 tol = 1e-6;
 itmax = 100;
 Y = [];
 
-while y(3) < 2 && y(3) > 0
-    [y, iconv] = continuationStep(funAlpha, y0, y1, s, tol, itmax);
-    if iconv == 1% No hem aconseguit solució
-        s = s - 0.1;
-    else
-        y0 = y1;
-        y1 = y;
+for it = 1:2:length(MP)% We launch the countinuation step at the 3 branches of solutions found
+    y0 = MP(:, it);
+    y1 = MP(:, it + 1);
+    y = y1;
 
-       if y(1, end) > dom1(1) && y(1, end) < dom1(2) && y(2, end) > dom2(1) && y(2, end) < dom2(2)
-            Y = [Y, y]; %solucions
-       end
+    while y(3) < 2 && y(3) > 0 && s > 0
+        [y, iconv] = continuationStep(funAlpha, y0, y1, s, tol, itmax);
 
-    end
-
-    plot(Y(end, :), Y(1:2, :), 'o');
-    hold on
-end
-
-y0 = sol21; %Y0(:, i);
-y1 = sol22; %Y1(:, i);
-y = y1;
-while y(3) < 2 && y(3) > 0
-    [y, iconv] = continuationStep(funAlpha, y0, y1, s, tol, itmax);
-    if iconv == 1% No hem aconseguit solució
-        s = s - 0.1;
-    else
-        y0 = y1;
-        y1 = y;
-
-        if y(1, end) > dom1(1) && y(1, end) < dom1(2) && y(2, end) > dom2(1) && y(2, end) < dom2(2)
-            Y = [Y, y]; %solucions
+       if iconv == 1 % No hem aconseguit solució i ajustem s
+            s = s - 0.1; % Si la s arriba a 0 desistirem i no buscarem mes solucions
+        else
+            y0 = y1;
+            y1 = y;
+            % Nomes les guardem si estan dintre el domini
+            if y(1, end) >= dom1(1) && y(1, end) <= dom1(2) && y(2, end) >= dom2(1) && y(2, end) <= dom2(2)
+                Y = [Y, y]; %solucions
+            end
         end
-
+        plot(Y(end, :), Y(1:2, :), 'o');
+        hold on
     end
-
-    plot(Y(end, :), Y(1:2, :), 'o');
-    hold on
 end
 
-
-
+title('Plot of the solution as a function of alpha using secant continuation step');
+xlabel('Alpha')
+ylabel('Phi')
 hold off
+
+
+% OPTIONAL PART:
+% Drawing of the pendulum at alfa = 2.14
+
+%As we want the plot at a specific alpha we'll use the newton method in
+%order to explore and not the secant continuation step to find solutions.
+
+figure(5)
+aleatoryTimes = 1:1:1000;
+alpha = 2.14;
+f = @(phi)([(tan(phi(1)) - alpha * (2 * sin(phi(1)) + sin(phi(2)))), (tan(phi(2)) - 2 * alpha * (sin(phi(1)) + sin(phi(2))))]);
+for i = aleatoryTimes
+    aleatory = rand(2, 1);
+    phi0 = aleatory .* factor - a;
+    %x*(a-b) - a
+    [XK, resd, it] = newtonn(phi0, 1e-16, 100, f);
+    if XK(1, end) >= dom1(1) && XK(1, end) <= dom1(2) && XK(2, end) >= dom2(1) && XK(2, end) <= dom2(2)
+            plot(alpha, XK(1, end), '*');  %phi1
+            plot(alpha, XK(2,end), '*') %phi2
+            hold on   
+    end
+end
+
+title('Exploration at alpha = 2.14 using newton with aleatory initial points');
+xlabel('Alpha')
+ylabel('Phi')
+hold off
+
+
+% We change the direction at we launch the secant continuation step, now we
+% go to the right
+% We will get to alpha = 3;
+maxAlfa = 3;
+Y = [];
+perDibuixar = [];
+
+figure;
+% Tirarem el continuation step en les 3 branques de solucions trobades anteriorment:
+for it = 1:2:length(MP)
+    y1 = MP(:, it); % Per ferho cal canviar el sentit, ja que ara anirem cap a la dreta
+    y0 = MP(:, it + 1);
+    y = y0;
+    
+    sensePintar = 1;
+
+    while y(3) < maxAlfa && y(3) > 0 && s > 0
+        [y, iconv] = continuationStep(funAlpha, y0, y1, s, tol, itmax);
+        if iconv == 1 % No hem aconseguit solució i ajustem s
+            s = s - 0.1; % Si la s arriba a 0 desistirem i no buscarem mes solucions
+        else
+            y0 = y1;
+            y1 = y; 
+            Y = [Y, y]; %solucions
+            % When we found the pendulum we save the solutions to draw.
+            if abs(alpha-y(3)) < epsilon && sensePintar == 1
+                perDibuixar = [perDibuixar, y];
+                sensePintar = 0;
+            end
+        end
+        
+        plot(Y(end, :), Y(1:2, :), 'o');
+        hold on
+    end
+    
+end
+
+title('Exploration from alpha = 2.14 to alpha = 3 using secant continuation step');
+xlabel('Alpha')
+ylabel('Phi')
+hold off
+
+% Dibuixem els pendols:
+for ii =perDibuixar
+    figure;
+    dibuixarPendul(ii(1), ii(2), 1);
+    title('Pendulum representation')
+    xlabel('x')
+    ylabel('y')
+end
+
+%{
+function succes = dibuixarPendul(phi1, phi2, l)
+% Funcio que fa un plot de un pendul doble amb els angles indicats i la longitud de les barres indicada (les dos igual)
+% a entrar els angels respecte la vertical en radiants
+
+h = plot(0, 0, 'MarkerSize', 30, 'Marker', '.', 'LineWidth', 2); %Guardem el objecte plot en una variable per utilitzar les seves propietats mes endavant
+
+range = 1.1 * (l + l); axis([-range range -range range]); axis square;
+
+set(gca, 'nextplot', 'replacechildren'); % Diem que en el seguent plot es pinti a partir d'on acaba l'anterior:
+
+Xcoord = [0, l * sin(phi1), l * sin(phi1) + l * sin(phi2)];
+Ycoord = [0, -l * cos(phi1), -l * cos(phi1) - l * cos(phi2)];
+set(h, 'XData', Xcoord, 'YData', Ycoord);
+drawnow;
+
+succes = 1;
+%}
+
+
+%As it can be seen, the solution to the right continue as theoretically
+%expected. There are not new branches emerged using continuationStep and
+%neither using newton. This is because new branches appear when the
+%jacobian's determinan is zero, and 
+
+% Com es pot observar, les solucions continuen cap a la dreta amb normalitat. 
+% No es troben noves branques ni amb el continuationStep ni amb l'exploracio newton aleatoria
+% Per tant determinem que no hi ha noves branques.
+% Aixo es deu a que les noves branques nomes poden neixer quan el determinant del jacobia es 0.
+% Mirem com evoluciona el jacobia per alfas mes grans de dos i veiem que no torna a ser 0 (fet a l'exercici a)
