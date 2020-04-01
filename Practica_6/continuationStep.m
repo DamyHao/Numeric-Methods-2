@@ -12,15 +12,9 @@ function [y, iconv] = continuationStep(fun, y0, y1, s, tol, itmax)
     % buscat)- xk(predictor)) sigui 0
     while it < itmax && tolk > tol
         J = jaco(fun, xk); % Jacobia en la posicio anterior
-     
-%{
-    size(fun(xk)')
-        size(v * (xk - yp)')
-        size((xk - yp)) 
-%}
 
         J = [J; v'];
-        fk = [fun(xk); v' * (xk - yp)]; % TODO: No sabem encara perq es aixi copiat de teoria
+        fk = [fun(xk); v' * (xk - yp)]; % TODO: Copiat de teoria
         [P, L, U] = PLU(J);
         Dx = pluSolve(L, U, P, -fk); %Solucio de la ecuacio J*Dx = -fk
         %Dx = J\fk;

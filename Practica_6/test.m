@@ -1,6 +1,1 @@
-aleatoryTimes = 1:100;
-
-for i = aleatoryTimes
-    aleatory = rand(2,1);
-    disp(aleatory);
-end
+dibuixarPendul(0.523, 0.52, 1) %30 60
