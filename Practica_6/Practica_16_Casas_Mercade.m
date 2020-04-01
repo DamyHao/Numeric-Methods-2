@@ -1,8 +1,8 @@
+%% Practica 16 Casas Mercadé
+
 clear all
 close all
 clc
-
-%addpath('../Practica_5')
 
 %% Section A)
 
@@ -44,15 +44,22 @@ plot(alphaZeros, Det0, '*')
 % is non-singular (det non zero) the system will define phi(1) and phi(2)
 % as a unique functions of aplha, so we'll have a unique map between
 % the solutions and alphas
-%When the determinant is zero the uniqueness will be lost locally nearby
-%the aplha points which make the determinant 0 and new branches of
-%solution may emerge.
+% When the determinant is zero the uniqueness will be lost locally nearby
+% the aplha points which make the determinant 0 and new branches of
+% solution may emerge.
+
+
 disp('The alpha values that make zero the determinant are more less:')
 disp(alphaZeros)
 
+% Anallitically:
+figure;
+img = imread('analitic.jpeg');
+image(img);
+
 %% Section B)
-%addpath('..Practica_5')
-x = 0.01;
+
+x = 0.001;
 alphas = 0:x:2;
 % Dominis dels angles
 dom1 = [0, pi / 2];
@@ -244,6 +251,9 @@ Y = [];
 perDibuixar = [];
 
 figure;
+title('Exploration from alpha = 2.14 to alpha = 3 using secant continuation step');
+xlabel('Alpha')
+ylabel('Phi')
 % Tirarem el continuation step en les 3 branques de solucions trobades anteriorment:
 for it = 1:2:length(MP)
     y1 = MP(:, it); % Per ferho cal canviar el sentit, ja que ara anirem cap a la dreta
@@ -273,9 +283,6 @@ for it = 1:2:length(MP)
     
 end
 
-title('Exploration from alpha = 2.14 to alpha = 3 using secant continuation step');
-xlabel('Alpha')
-ylabel('Phi')
 hold off
 
 % Dibuixem els pendols:
@@ -285,8 +292,10 @@ for ii =perDibuixar
     title('Pendulum representation')
     xlabel('x')
     ylabel('y')
+    hold off
 end
 
+% Codes used:
 %{
 function succes = dibuixarPendul(phi1, phi2, l)
 % Funcio que fa un plot de un pendul doble amb els angles indicats i la longitud de les barres indicada (les dos igual)
@@ -304,6 +313,72 @@ set(h, 'XData', Xcoord, 'YData', Ycoord);
 drawnow;
 
 succes = 1;
+
+
+function [y, iconv] = continuationStep(fun, y0, y1, s, tol, itmax)
+
+    it = 1;
+    tolk = 1;
+    v = y1 - y0;
+    yp = y1 + v * s; % Si s = 1 conseguim que la separaci� entre solucions sigui el maxim de "constant"
+    xk = yp;
+    XK = [];
+
+    % A part de les ecuacions que teniem en el nnewton normal, li
+    % imposareem que el preoducte escalar entre v i (xk(punt
+    % buscat)- xk(predictor)) sigui 0
+    while it < itmax && tolk > tol
+        J = jaco(fun, xk); % Jacobia en la posicio anterior
+
+        J = [J; v'];
+        fk = [fun(xk); v' * (xk - yp)]; % TODO: Copiat de teoria
+        [P, L, U] = PLU(J);
+        Dx = pluSolve(L, U, P, -fk); %Solucio de la ecuacio J*Dx = -fk
+        %Dx = J\fk;
+        xk = xk + Dx;
+        XK = [XK, xk];
+        tolk = norm(Dx); % Mirem la distancia entre el anterior i l'actual
+        it = it + 1;
+    end
+
+    y = xk;
+
+    %Retornem si convergeix o no per modificar la s si cal:
+    if it <= itmax && tolk < tol
+        iconv = 0; %OK
+    else
+        iconv = 1; %No em arribat a enlloc
+    end
+
+end
+
+
+function [XK, resd, it] = newtonn(x0, tol, itmax, fun)
+    % Atencio, pirmer comprobara a a la carpeta actual si hi son
+
+    xk = [x0]; 
+    XK = [x0]; 
+    resd = [norm(feval(fun, xk))]; 
+    it = 1; 
+    tolk = 1;
+
+    while it < itmax && tolk > tol
+        J = jaco(fun, xk); % Jacobia en la posicio anterior
+        fk = feval(fun, xk); 
+        %[P, L, U] = PLU(J);
+       
+        %Dx = pluSolve(L, U, P, (-fk)'); %Solucio de la ecuacio J*Dx = -fk
+
+        Dx = J\(-fk)';
+        xk = xk + Dx;
+        XK = [XK, xk];
+        resd = [resd, norm(fk)];
+        tolk = norm(XK(:, end) - XK(:, end - 1));
+        it = it + 1;
+        
+
+    end
+
 %}
 
 
