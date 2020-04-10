@@ -1,10 +1,12 @@
-%% Practica 16 Casas Mercadé
+%% Practica_16 Casas_Mercade
+
+
+
+%% Section A)
 
 clear all
 close all
 clc
-
-%% Section A)
 
 determinants = [];
 alphas = 0:0.01:3;
@@ -251,9 +253,7 @@ Y = [];
 perDibuixar = [];
 
 figure;
-title('Exploration from alpha = 2.14 to alpha = 3 using secant continuation step');
-xlabel('Alpha')
-ylabel('Phi')
+
 % Tirarem el continuation step en les 3 branques de solucions trobades anteriorment:
 for it = 1:2:length(MP)
     y1 = MP(:, it); % Per ferho cal canviar el sentit, ja que ara anirem cap a la dreta
@@ -278,6 +278,9 @@ for it = 1:2:length(MP)
         end
         
         plot(Y(end, :), Y(1:2, :), 'o');
+        title('Exploration from alpha = 2.14 to alpha = 3 using secant continuation step');
+        xlabel('Alpha')
+        ylabel('Phi')
         hold on
     end
     
