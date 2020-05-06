@@ -12,6 +12,9 @@ function [y, iconv] = continuationStep(fun, y0, y1, s, tol, itmax)
     % A part de les ecuacions que teniem en el nnewton normal, li
     % imposareem que el preoducte escalar entre v i (xk(punt
     % buscat)- xk(predictor)) sigui 0
+    n = length(y0)+1;
+    normSpecial=@(u)(sqrt(cuadratura_cc(a, b, n-2, u.^2)));
+    
     while it < itmax && tolk > tol
         J = jaco(fun, xk); % Jacobia en la posicio anterior
 
@@ -19,11 +22,12 @@ function [y, iconv] = continuationStep(fun, y0, y1, s, tol, itmax)
         fk = [fun(xk); v' * (xk - yp)]; % TODO: Copiat de teoria
         [P, L, U] = PLU(J);
         Dx = pluSolve(L, U, P, -fk); %Solucio de la ecuacio J*Dx = -fk
-        %Dx = J\fk;
+        
+        %DxM = J\-fk;
         xk = xk + Dx;
         XK = [XK, xk];
 
-        tolk = norm(Dx); % Mirem la distancia entre el anterior i l'actual
+        tolk = normSpecial(Dx); % Mirem la distancia entre el anterior i l'actual
         it = it + 1;
     end
 

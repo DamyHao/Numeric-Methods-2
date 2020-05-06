@@ -40,58 +40,52 @@ normSpecial=@(u)(sqrt(cuadratura_cc(a, b, n-2, u.^2)));
 U=[];
 Norm=[];
 f0=ones(n-1,1);
-lambda=[];
+initialLamb = -4;
+eps = 0.1;
+lambdas=[initialLamb, (initialLamb + eps)];
+initialGuesss = [];
 
-for i=[-4:0.1:4]
-    F = @(f)((Lhat + M3*inv(M2)*mCoef*M1)*f + M3*inv(M2)*[C(2,3);C(1,3)] + i.*exp(f));
+% Trobem les dos condicions inicials
+for la=lambdas
+    F = @(f)((Lhat + M3*inv(M2)*mCoef*M1)*f + M3*inv(M2)*[C(2,3);C(1,3)] + la.*exp(f));
     [XK, resd, it] = newtonn(f0, 1e-10, 100, F);
-    if XK(:,end)<5
-        U=[U XK(:,end)];
-        f0=XK(:,end);
-        Norm=[Norm normSpecial(XK(:,end))];
-        lambda=[lambda i];
-    end
+    initialGuesss = [initialGuesss, [XK(:, end); la]];
 end
-figure;
-plot(lambda,Norm,'o')
 
 
 %To do the continuation step
 s = 1; itmax = 500; tol = 1e-10;
-y0=[U(:,1); lambda(1)];
-y1=[U(:,2); lambda(2)];
+y0=initialGuesss(:,1);
+y1=initialGuesss(:,2);
 
-normes=[normSpecial(y0(1:end-1)), normSpecial(y1(1:end-1))];
-lamb=[y0(end), y1(end)];
-Y = [y0, y1];
+%normes=[normSpecial(y0(1:end-1)), normSpecial(y1(1:end-1))];
+%lamb=[y0(end), y1(end)];
+%Y = [y0, y1];
+
 
 funLamb = @(f)((Lhat + M3*inv(M2)*mCoef*M1)*f(1:end-1) + M3*inv(M2)*[C(2,3);C(1,3)] + f(end).*exp(f(1:end-1)));
-
-y=y1;
-it = 0;
-
+iterator = 0;
+y= y0;
+Y = [];
 
 figure;
-while -4<y(end) && y(end)<4 && it < itmax
+while -5<y(end) && y(end)<4 && iterator < itmax
     [y, iconv] = continuationStep(funLamb, y0, y1, s, tol, itmax);
     y0 = y1;
     y1 = y;
     Y = [Y, y];
-    
-    normes=[normes, normSpecial(Y(1:end-1,end))];
-    lamb=[lamb y(end)];
-    
-    hold on
-    it = it +1;
+    iterator = iterator +1;
+    yy =  normSpecial(y(1:end-1));
+    plot(y(end), yy, 'o');
+    hold on;
 end
 hold off
 
-figure;
-plot(lamb,normes, 'o');
-title('Exploration from lambda=-4 to lambda=4 using secant continuation step');
-xlabel('lambda')
-ylabel('U')
-hold off
+% plot(lamb,normes, 'o');
+% title('Exploration from lambda=-4 to lambda=4 using secant continuation step');
+% xlabel('lambda')
+% ylabel('U')
+% hold off
 
 
 

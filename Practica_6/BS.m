@@ -1,7 +1,6 @@
 function x = BS(A, b)
 
 [dim, n] = size(A);
-[res, dimB] = size(b);
 x = zeros(n, 1);
 
 if dim ~= n; error('NECESSITA UNA MATRIU QUADRADA. Revisar els arguments');
