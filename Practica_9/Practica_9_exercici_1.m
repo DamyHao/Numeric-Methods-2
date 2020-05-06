@@ -34,7 +34,7 @@ C=[1 0 0; 1 0 0];
 mCoef = [ C(2,2), 0 ;  0, C(1,2)];
 [M1,M2,M3,Lhat, x] = crearMatriusODE(n, C, p, q, r,a,b);
 
-%norma U
+
 normSpecial=@(u)(sqrt(cuadratura_cc(a, b, n-2, u.^2)));
 
 U=[];
