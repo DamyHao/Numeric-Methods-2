@@ -10,17 +10,13 @@ Q=diag(q(x));
 R=diag(r(x));
 L=P*D^2+Q*D+R;
 
-%Cas en que nomes tenim una condicio de Robin corresponent a x=1. Haurem de
-%treure el primer element ja que els nodes chebyshev estan al reves.
+Lhat=L(2:end-1,2:end-1);
 
-Lhat=L(2:end,2:end); %treiem primera fila i primera columna de L
+M1=-[D(1,2:end-1);D(end,2:end-1)];
 
-
-M1=-D(1,2:end); %Primera fila de D, sense agafar element de la primera columna
-
-
-M2 = [C(2,1) + C(2,2)*D(1,1)];
+M2 = [C(2,1) + C(2,2)*D(1,1), C(2,2)*D(1,end);
+      C(1,2)*D(end, 1), C(1,1) + C(1,2)*D(end,end)];
     
-M3= [L(2:end,1)];
+M3= [L(2:end-1,1), L(2:end-1,end)];
 
 end

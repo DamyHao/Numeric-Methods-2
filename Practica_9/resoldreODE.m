@@ -7,5 +7,4 @@ mCoef = [ C(2,2), 0 ;
 esquerra = Lhat + M3*inv(M2)*mCoef*M1;
 dreta=g(x(2:end-1))-M3*inv(M2)*[C(2,3);C(1,3)];
 
-[P, L, U] = PLU(esquerra);
-f = pluSolve(L, U, P, dreta);
+f = esquerra\dreta;
