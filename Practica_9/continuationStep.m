@@ -9,8 +9,6 @@ function [y, iconv] = continuationStep(fun, y0, y1, s, tol, itmax)
     xk = yp;
     XK = [];
     a=0; b=1;
-    n= length(y0)+1;
-    normaSpecial=@(u)(sqrt(cuadratura_cc(a, b, n-2, u.^2)));
     % A part de les ecuacions que teniem en el nnewton normal, li
     % imposareem que el preoducte escalar entre v i (xk(punt
     % buscat)- xk(predictor)) sigui 0

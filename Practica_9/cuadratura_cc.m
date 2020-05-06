@@ -27,8 +27,8 @@ for j=0:N
         Wj= [Wj (4/N)*suma];
     end
 end
-%disp(size(Wj));
-%disp(size(fx));
+% disp(size(Wj));
+% disp(size(fx));
 integral = Wj*fx;
 integral = ((b-a)/2)*integral;
 
