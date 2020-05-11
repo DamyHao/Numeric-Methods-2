@@ -15,11 +15,6 @@ function [XK, resd, it] = newtonn(x0, tol, itmax, fun)
     % Resd = resulting residuals of iteration: ||F_k||, we want it to be 0,
     % as we are looking for f(x)=0
     % it = number of required iterations to satisfy tolerance
-    %Utilitzara la funcio que estigui cirdad la ultima
-    %En aquet cas les prioritaries seran les de la practica2.
-    
-    
-    % Atencio, pirmer comprobara a a la carpeta actual si hi son
 
     xk = [x0]; 
     XK = [x0]; 
