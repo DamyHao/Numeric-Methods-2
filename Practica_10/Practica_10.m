@@ -27,19 +27,23 @@ exactSolution = RK4(initial, hext, @gravFunctionV, points);
 %exactSolution = AB4(solution(:, 1:4), hext, @gravFunctionV, steps);
 rext = exactSolution(:, end);
 
-rr=[];
-errors=[];
+rr = [];
+errors = [];
 ns = -4:0.01:-1;
 haches = 10.^ns;
+hs = [];
 %haches = 1e-4:0.001:0.1;
 for h = haches
-    points = time/h +1;
-    solution1 = RK4(initial, h, @gravFunctionV, points);
-    r=solution1(:,end);
-    rr=[rr r];
-    disp(r-rext)
-    errors=[errors norm(r-rext)];
+    points = time / h + 1;
+    if floor(points) == points % Comprovar si es purament enter
+        hs = [hs h];
+        solution1 = RK4(initial, h, @gravFunctionV, points);
+        r = solution1(:, end);
+        rr = [rr r];
+        errors = [errors norm(r - rext)];
+    end
+
 end
 
 figure;
-loglog(haches,errors)
+loglog(hs, errors)
