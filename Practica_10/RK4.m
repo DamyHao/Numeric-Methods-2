@@ -14,7 +14,7 @@ function v = RK4(vn0, h, fun, desiredPoints)
         d = h * fun(vn + c);
 
         vn1 = vn + (1/6).* (a + 2*b + 2*c + d);
-        v = [v , vn1]; %cada columna es un punt
+        v = [v  vn1]; %cada columna es un punt
         vn = vn1;
 
     end
