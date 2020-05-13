@@ -86,8 +86,6 @@ legend('RK', 'AB', 'Location', 'best');
     %   donem). Es en realitat desiredPoints = steps-1 on steps son els pasos que fara.
     % Outputs:
     %   v: matriu amb els punts com a columnes
-    %
-    % Truncation error: O(h³)
   
 
     % Prellocating memory to gain speed
