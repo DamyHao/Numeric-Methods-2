@@ -41,30 +41,27 @@ rext = exactSolutionRK(1:2, end);
 errorsRK = [];
 errorsAB = [];
 hs = [];
-haches = 1e-3:0.0001:0.1;
+t=2;
+% The maximum and the minimum h:
+minSteps = t/1e-1;
+maxSteps = t/1e-3;
 
-for h = haches
-    points = time / h + 1;
-    %RK i AB gives us the n+1 point so in order to obatin the one
-    %corresponding to t=2 we have to add this plus one
+% We will test for every h possible:
+for steps = minSteps:1:maxSteps
+    points = steps + 1;
+    h = t/steps;
+    hs = [hs h];
+    solutionRK = RK4(initial, h, @gravFunctionV, points);
+    r = solutionRK(1:2, end);
+    errorsRK = [errorsRK norm(r - rext)];
 
-    if floor(points) == points
-        % The number of points must be a natural number and for some values
-        %of h it is a decimal one, we one use those values that gives a
-        %natural number of points
-        hs = [hs h];
-        solutionRK = RK4(initial, h, @gravFunctionV, points);
-        r = solutionRK(1:2, end);
-        errorsRK = [errorsRK norm(r - rext)];
-
-        %As done before, we use the first three steps provided by RK plus
-        %the intial condition
-        solutionAB = AB4(solutionRK(:, 1:4), h, @gravFunctionV, points);
-        r2 = solutionAB(1:2, end);
-        errorsAB = [errorsAB norm(r2 - rext)];
-    end
-
+    %As done before, we use the first three steps provided by RK plus
+    %the intial condition
+    solutionAB = AB4(solutionRK(:, 1:4), h, @gravFunctionV, points);
+    r2 = solutionAB(1:2, end);
+    errorsAB = [errorsAB norm(r2 - rext)];
 end
+
 
 figure;
 loglog(hs, errorsRK)
@@ -75,6 +72,77 @@ title('Error dependence of h')
 xlabel('h')
 ylabel('\epsilon (h)')
 legend('RK', 'AB', 'Location', 'best');
+
+% Codes:
+%{
+  function v = RK4(vn0, h, fun, desiredPoints)
+    % Algoritme per resoldre ODEs de PVI.
+    % 
+    % Inputs: 
+    %   vn0:introduim vn0 columna
+    %   h: increment de temps. Estara equiespaiat
+    %   fun: Funcio f que dona la derivada: dv/dt = f(t, v(t))
+    %   desiredPoints: nombre de punts que treura (comptant el que ja li
+    %   donem). Es en realitat desiredPoints = steps-1 on steps son els pasos que fara.
+    % Outputs:
+    %   v: matriu amb els punts com a columnes
+    %
+    % Truncation error: O(h³)
+  
+
+    % Prellocating memory to gain speed
+    v = zeros(length(vn0), floor(desiredPoints));
+    v(:,1) = vn0;
+    %v = [vn0]; 
+    vn = vn0;
+
+    for i = 1:desiredPoints-1 % Si li demanem un punt fara 0 iteracions
+        a = h * fun(vn);
+        b = h * fun(vn +a / 2);
+        c = h * fun(vn + b / 2);
+        d = h * fun(vn + c);
+
+        vn1 = vn + (1/6).* (a + 2*b + 2*c + d);
+        v(:, i+1) = vn1; %cada columna es un "punt"
+        vn = vn1;
+    end
+end
+
+
+function V = AB4(vn, h, fun, desiredPoints)
+    % Algoritme multistep per solucionar ODEs de IVP. Més rapid que RK4.
+    % Input:
+    %   vn: [vn, vn+1, vn+2, vn+3] matriu de vectors columna (els 4 punts anteriors al desitjat). Calculats amb RK4 per exemple.
+    %       ELS 4 RESULTATS HAN DETAR SEPARATS H.
+    %   h: incrament de temps equiespaiats
+    %   fun: Funcio f que dona la derivada: dv/dt = f(t, v(t)). "Part dreta de una edo de mm1"
+    %   desiredPoints: nombre de punts que treura (comptant el que ja li
+    %       donem).
+    % Outputs:
+    %   v: matriu amb els punts com a columnes
+    
+
+    % Utilitzem els coeficients ja calculats a clase:
+    % b0 = -3/8; b1 = 37/24 ; b2 = -59/24; b3 = 55/24;
+    betas = [-3/8; 37/24; -59/24; 55/24];
+    V = vn;
+
+    % Per evitar evaluar la fun multiples vegades farem un cua en un vector: (FIFO: first in first out)
+    queue = [fun(V(:, end - 3)), fun(V(:, end - 2)), fun(V(:, end - 1)), fun(V(:, end))];
+
+    for i = 1:desiredPoints-4
+        vNext = V(:, end) + h .* (queue*betas); % Que era en realitat: (betas(1) .* fun(V(:, end - 3)) + betas(2) .* fun(V(:, end - 2)) + betas(3) .* fun(V(:, end - 1)) + betas(4) .* fun(V(:, end)))
+        %Actualizem cua: el rendiment sera pobre pero es problema del matlab:
+        queue(:, 1) = [];
+        a = fun(vNext);
+        queue(1:4, end+1) = fun(vNext);
+        V = [V, vNext]; %cada columna es un punt (x, y,vx,vy) i per tant V sera una matriu de 4 files
+    end
+end
+
+
+%}
+
 
 % Questions:
 % Looking at the logaritmic plot of the error we can see that
@@ -182,7 +250,7 @@ function [XK, resd, it] = newtonn(x0, tol, itmax, fun)
         %are required and the components of the inital velocity, and with this
         %information we can proced as in section A in order to do the plot of
         %the tragectory followed by the particle
-        points = floor(XK(2, end) / h) + 2;
+        points = XK(2, end) / h + 1; %+1 sempre!
         initial = [0, 0, v * cos(XK(1, end)), v * sin(XK(1, end))]';
         solutionRK = RK4(initial, h, @gravFunctionV, points);
         plot(solutionRK(1, :), solutionRK(2, :), 'LineWidth', 2)

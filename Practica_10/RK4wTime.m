@@ -7,11 +7,9 @@ function v = RK4wTime(vn0, h, fun, desiredPoints)
     %   h: increment de temps. Estara equiespaiat
     %   fun: Funcio f que dona la derivada: dv/dt = f(t, v(t))
     %   desiredPoints: nombre de punts que treura (comptant el que ja li
-    %   donem). Es en realitat desiredPoints = steps-1 on steps son els pasos que fara.
+    %   donem). Es en realitat desiredPoints = steps+1 on steps son els pasos que fara.
     % Outputs:
     %   v: matriu amb els punts com a columnes EN LA PRIMERA FILA HI HAURA EL TEMPS
-    %
-    % Truncation error: O(h³)
 
     % Prellocating memory to gain speed
     v = zeros(length(vn0) + 1, floor(desiredPoints));

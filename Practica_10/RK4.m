@@ -1,16 +1,17 @@
 function v = RK4(vn0, h, fun, desiredPoints)
     % Algoritme per resoldre ODEs de PVI.
     % 
+    %  |--|--|--|--|...   "|": points  "--": steps
+    % 
     % Inputs: 
     %   vn0:introduim vn0 columna
     %   h: increment de temps. Estara equiespaiat
     %   fun: Funcio f que dona la derivada: dv/dt = f(t, v(t))
     %   desiredPoints: nombre de punts que treura (comptant el que ja li
-    %   donem). Es en realitat desiredPoints = steps-1 on steps son els pasos que fara.
+    %   donem). Es en realitat desiredPoints = steps+1 on steps son els pasos que fara.
     % Outputs:
     %   v: matriu amb els punts com a columnes
-    %
-    % Truncation error: O(h³)
+
   
 
     % Prellocating memory to gain speed
