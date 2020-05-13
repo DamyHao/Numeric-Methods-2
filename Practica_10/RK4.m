@@ -1,22 +1,32 @@
 function v = RK4(vn0, h, fun, desiredPoints)
-    % Treu la següent v. h equispaced
-    % Nombre de punts que volem obtenir amb RK4
-    % introduim vn0 columna
-    % DesiredPoints: nombre de punts que treura (comptant el que ja li
-    % donem). Es en realitat el nombre de steps-1.
-    vn = vn0;
-    v = [vn0];
+    % Algoritme per resoldre ODEs de PVI.
+    % 
+    % Inputs: 
+    %   vn0:introduim vn0 columna
+    %   h: increment de temps. Estara equiespaiat
+    %   fun: Funcio f que dona la derivada: dv/dt = f(t, v(t))
+    %   desiredPoints: nombre de punts que treura (comptant el que ja li
+    %   donem). Es en realitat desiredPoints = steps-1 on steps son els pasos que fara.
+    % Outputs:
+    %   v: matriu amb els punts com a columnes
+    %
+    % Truncation error: O(h³)
+  
 
-    for i = 1:desiredPoints-1
+    % Prellocating memory to gain speed
+    v = zeros(length(vn0), floor(desiredPoints));
+    v(:,1) = vn0;
+    %v = [vn0]; 
+    vn = vn0;
+
+    for i = 1:desiredPoints-1 % Si li demanem un punt fara 0 iteracions
         a = h * fun(vn);
         b = h * fun(vn +a / 2);
         c = h * fun(vn + b / 2);
         d = h * fun(vn + c);
 
         vn1 = vn + (1/6).* (a + 2*b + 2*c + d);
-        v = [v  vn1]; %cada columna es un punt
+        v(:, i+1) = vn1; %cada columna es un "punt"
         vn = vn1;
-
     end
-
 end
