@@ -1,8 +1,7 @@
-function v = RK4(vn0, h, fun, desiredPoints)
+function v = ExplicitEuler(vn0, h, desiredPoints)
     % Algoritme per resoldre ODEs de PVI.
     % 
     %  |--|--|--|--|...   "|": points  "--": steps
-    %  t/h es steps
     % 
     % Inputs: 
     %   vn0:introduim vn0 columna
@@ -20,14 +19,14 @@ function v = RK4(vn0, h, fun, desiredPoints)
     v(:,1) = vn0;
     %v = [vn0]; 
     vn = vn0;
-
+    N = 128;
+    dft2 = dftdiffmat2(N);
+    dft1 = dftdiffmat1(N);
+    funBurger = @(f)(dft2*f+f'*dft1*f);
+    
     for i = 1:desiredPoints-1 % Si li demanem un punt fara 0 iteracions
-        a = h * fun(vn);
-        b = h * fun(vn +a / 2);
-        c = h * fun(vn + b / 2);
-        d = h * fun(vn + c);
-
-        vn1 = vn + (1/6).* (a + 2*b + 2*c + d);
+        a = h * funBurger(vn);
+        vn1 = vn + a;
         v(:, i+1) = vn1; %cada columna es un "punt"
         vn = vn1;
     end
