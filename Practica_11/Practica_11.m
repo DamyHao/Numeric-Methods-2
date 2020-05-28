@@ -173,6 +173,12 @@ vy = x + 0.9 * y - x.^3 - x.^2 .* y;
 
 zoomX = 0.025;
 zoomY = 0.025;
+%{
+equispaced = -zoomX:0.001:zoomX
+equispaced2 = -zoomX:0.01:zoomX
+ startx = [ equispaced , min(equispaced).*ones(1,length(equispaced)), equispaced, min(equispaced).*ones(1,length(equispaced))];
+starty = [min(equispaced).*ones(1,length(equispaced)) , equispaced, 0.025+max(equispaced).*ones(1,length(equispaced)), equispaced] ; 
+%}
 figure
 quiver(x, y, vx, vy)
 %startx = -zoomX:0.001:zoomX;
