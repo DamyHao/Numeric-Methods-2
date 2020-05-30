@@ -5,10 +5,10 @@
 % Output: T (time vector: 1 x N+1)
 % Y (solution matrix: n x N+1)
 function [T,Y] = bdf1(fun,t0,h,v0,N)
-T = zeros(1,N); n = length(v0); I = eye(n);
-Y = zeros(length(v0),N); DF = zeros(n); H = sqrt(eps)*I;
+T = zeros(1,N-1); n = length(v0); I = eye(n);
+Y = zeros(length(v0),N-1); DF = zeros(n); H = sqrt(eps)*I;
 T(1) = t0; Y(:,1) = v0;
-for j = 1:N-1
+for j = 1:N-2
     z0 = Y(:,j) ; tplus = t0 + h*j; T(j+1) = tplus;
     dz = 1; z = z0 ;
     while norm(dz) > 1e-12
