@@ -190,7 +190,13 @@ vy = x + 0.9 * y - x.^3 - x.^2 .* y;
 
 zoomX = 0.025;
 zoomY = 0.025;
-figure;
+%{
+equispaced = -zoomX:0.001:zoomX
+equispaced2 = -zoomX:0.01:zoomX
+ startx = [ equispaced , min(equispaced).*ones(1,length(equispaced)), equispaced, min(equispaced).*ones(1,length(equispaced))];
+starty = [min(equispaced).*ones(1,length(equispaced)) , equispaced, 0.025+max(equispaced).*ones(1,length(equispaced)), equispaced] ; 
+%}
+figure
 quiver(x, y, vx, vy)
 hold on;
 plot([-0.5:0.01:0.5] * evec(1, 1), [-0.5:0.01:0.5] * evec(2, 1), 'b')
