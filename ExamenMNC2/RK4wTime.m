@@ -4,7 +4,7 @@ function V = RK4wTime(vn0, h, fun, desiredPoints)
     %  plot(V(1,:), V(2, :));
     %  |--|--|--|--|...   "|": points  "--": steps
     %    => desiredPoints - 1 = steps (en aquest cas RK1 o AB1)
-    %   Tfinal sera vn(0) + h*(desiredPoints-algo)
+    %   Tfinal sera vn(0) + h*(desiredPoints-1)
     % Inputs:
     %   vn0: introduim vn0 columna i en la posicio 0 el instant 0
     %   h: increment de temps. Estara equiespaiat
@@ -15,7 +15,7 @@ function V = RK4wTime(vn0, h, fun, desiredPoints)
     %   v: matriu amb els punts com a columnes EN LA PRIMERA FILA HI HAURA EL TEMPS
 
     % Prellocating memory to gain speed
-    V = zeros(length(vn0) + 1, floor(desiredPoints));
+    V = zeros(length(vn0), floor(desiredPoints));
     V(:, 1) = vn0;
     %v = [vn0];
     vn = vn0(2:end);

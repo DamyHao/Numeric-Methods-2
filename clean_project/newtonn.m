@@ -3,7 +3,7 @@ function [XK, resd, it] = newtonn(x0, tol, itmax, fun)
     % method that allows you to approximate the solution of the system with a
     % precision tol
 
-    % INPUTS:
+    % INPUT:
     % x0 = initial guess  --> column vector
     % tol = tolerance so that ||x_{k+1} - x_{k} || < tol
     % itmax = max number of iterations allowed
@@ -34,5 +34,3 @@ function [XK, resd, it] = newtonn(x0, tol, itmax, fun)
         tolk = norm(XK(:, end) - XK(:, end - 1));
         it = it + 1;
     end
-
-    
