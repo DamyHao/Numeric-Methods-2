@@ -53,7 +53,7 @@
 
 clear all;
 clc;
-close all;;
+close all;
 g=1;
 p = @(x)(x); % En cas que sigui una funcio constant, cal que apareixi la x en el function handler
 q =@(x)(0.*x + 1);

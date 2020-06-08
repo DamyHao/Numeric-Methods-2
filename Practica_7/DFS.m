@@ -3,6 +3,6 @@ function FNx = DFS (fk,x)
 % coeficients de fourier fk. x HA DE SER una columna
 
 N = length(fk); M = length(x) ; k = [0:N-1]; 
-PHI = exp(i*x*(k-N/2)); FNx = PHI*fk;
+PHI = exp(1i*x*(k-N/2)); FNx = PHI*fk;
 
 end

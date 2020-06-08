@@ -3,7 +3,7 @@ function v = ExplicitEuler(vn0, h, fun, desiredPoints)
     % V_n+1 = V_n + h*F_n
     % 
     %  |--|--|--|--|...   "|": points  "--": steps
-    % 
+    % => desiredPoints - 1 = steps (en aquest cas RK1 o AB1)
     % Inputs: 
     %   vn0: introduim vn0 columna
     %   h: increment de temps. Estara equiespaiat
@@ -18,10 +18,10 @@ function v = ExplicitEuler(vn0, h, fun, desiredPoints)
     v(:,1) = vn0;
     %v = [vn0]; 
     vn = vn0;
-    for i = 1:desiredPoints-1 % Si li demanem un punt fara 0 iteracions
+    for ii = 1:desiredPoints-1 % Si li demanem un punt fara 0 iteracions
         a = h * fun(vn);
         vn1 = vn + a;
-        v(:, i+1) = vn1; %cada columna es un "punt"
+        v(:, ii+1) = vn1; %cada columna es un "punt"
         vn = vn1;
     end
 end

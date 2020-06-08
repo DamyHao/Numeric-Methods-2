@@ -1,4 +1,4 @@
-function [f, x] = resoldreODE(n, C, p, q, r, g)
+function [f, x] = resoldreODE(n, C, p, q, r, g, a, b)
     % Resol una equacio diferencial de tipus boundary en el interval a,b.
     % ATENCIO: fiquem les C, p, q, r, al domini de (a,b) (en realitat falta per comprovar si va aqui pero 99% segur que si jeje)
     % INPUT:
@@ -16,7 +16,7 @@ function [f, x] = resoldreODE(n, C, p, q, r, g)
     %   f: vector solucio.
     %   x: nodes on sha avaluat. Atencio que del primer i del ultim no sen torna el
     %      valor en f.
-    [M1, M2, M3, Lhat, x] = crearMatriusODE(n, C, p, q, r);
+    [M1, M2, M3, Lhat, x] = crearMatriusODE(n, C, p, q, r, a, b);
     mCoef = [C(2, 2), 0;
         0, C(1, 2)];
     esquerra = Lhat + M3 * inv(M2) * mCoef * M1;
