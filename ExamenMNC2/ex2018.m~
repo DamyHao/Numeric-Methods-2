@@ -80,15 +80,12 @@ disp(abs(diag(VAL)))
 
 %Posarem 0.9999999 i farem variar el angle
 solutions = [];
-
-for angle = pi/4:0.1:2*pi
-    initialT = 0.99;
+for angle = 0:0.01:2*pi
+    initialT = 0.9999999;
     x0 = [angle; initialT];
-    %[XK, resd, it] = newtonn(x0, 1e-8, 100, @finishAtOne);
-    [XK, conv, it] = newtonnConv(x0, 1e-8, 15, @finishAtOne);
-    if conv == 1 && (XK(2, end) > 1e-14)
-        solutions =  [solutions, XK(:, end)];
-    end
+    [XK, resd, it] = newtonn(x0, 1e-10, 100, @finishAtOne);
+    if(solutio
+    solutions =  [solutions, XK(:, end)];
 end
 
 
@@ -98,19 +95,35 @@ px = v0mod*cos(in(1));
 py = v0mod*sin(in(1));
 vn0 = [0;-3.779310253377747 ; px ; -3.283185991286169 ; py];
 
-if 0 < in(2) && in(2)<1
-    steps = 20000;
-    h = in(2)/steps ;
-    VTemp = RK4wTime(vn0, h, @rkFun, steps);
-    C = [-2.805118086952745 ; 3.131312518250573 ];
-    xf = VTemp(2,end);
-    yf = VTemp(4,end);
-    distToC = [xf;yf]-C; 
-else 
-    disp('Surpasing t = 1');
-    % If time is greater than 2, we will introduce an "artificial slope" to help newton to converge to r = (0,0)
+if 0 < in(2) < 1
+    h = 0.01;
+    desiredPoints = in(2)/h + 1;
+    VTemp = RK4wTime(vn0, h, @rkFun, desiredPoints);
+    C = [-2.805118086952745 , 3.131312518250573 ];
+    distToC = norm(VTemp(2:end,end)-C);
+else % If time is greater than 2, we will introduce an "artificial slope" to help newton to converge to r = (0,0)
     % If we launch newton to the correct point we will not reach this code:
-    distToC = [1;1]*in(2);
+    disp('Surpasing t = 1');
+    distToC = in(2);
 end
 end
 
+function r = funForNewton(z)
+    % Function to launch newtonn
+    % Input: z is a vector of two components, the first one corresponds to
+    % the launch angle of the particle and the second one to the time that it
+    % takes to get to the origin
+    % Output: the distance to the origin. Newton will make it 0.
+    initial = [0; -3.779310253377747; sqrt(2) .* cos(z(1)); sqrt(2) .* sin(z(1))]; % initial point to launch RK4
+    steps = 20000; %h will be smaller than 0.0001 since we the time to be < 2
+
+    if 0 < z(2) < 2
+        h = z(2) / steps;
+        sol = RK4(initial, h, @gravFunctionV, steps + 1);
+        r = sol(1:2, end);
+    else % If time is greater than 2, we will introduce an "artificial slope" to help newton to converge to r = (0,0)
+         % If we launch newton to the correct point we will not reach this code:
+        disp('Surpasing t = 2');
+        r = [1; 1]*z(2);
+    end
+end
