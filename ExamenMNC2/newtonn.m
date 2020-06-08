@@ -24,11 +24,10 @@ function [XK, resd, it] = newtonn(x0, tol, itmax, fun)
     while it < itmax && tolk > tol
         J = jaco(fun, xk); % Jacobia en la posicio anterior
         fk = feval(fun, xk);
-        [P, L, U] = PLU(J);
-        % Si entra un vector fila es transposa. Si es columna no
-        Dx = pluSolve(L, U, P, (-fk)'); %Solucio de la ecuacio J*Dx = -fk
-        % Intenta resoldre aquest sistema
-        % Dx = J\(-fk)';
+        %[P, L, U] = PLU(J);
+        %Dx = pluSolve(L, U, P, (-fk)'); %Solucio de la ecuacio J*Dx = -fk
+        %Matlab linear sistem solving
+        Dx = J\(-fk);
         xk = xk + Dx;
         XK = [XK, xk];
         resd = [resd, norm(fk)];

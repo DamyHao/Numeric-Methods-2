@@ -1,7 +1,7 @@
 function fk = DFT(fj)
     % Li donem els punts avaluats en physical space i ens retorna els
     % coeficients de la serie de Fourier (transformades de fourier (fourier space))
-    % fj que sigui columna
+    % tot en columna
     N = length(fj);
     W = exp(-1i * 2 * pi / N);
     k = 0:N - 1; j = 0:N - 1;
