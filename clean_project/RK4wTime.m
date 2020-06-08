@@ -13,6 +13,8 @@ function V = RK4wTime(vn0, h, fun, desiredPoints)
     %   donem). Es en realitat desiredPoints = steps+1 on steps son els pasos que fara.
     % Outputs:
     %   v: matriu amb els punts com a columnes EN LA PRIMERA FILA HI HAURA EL TEMPS
+    % error del hordre de O(h^4) Es pot comprovar fent plot log log i
+    % mirant pendent
 
     % Prellocating memory to gain speed
     V = zeros(length(vn0), floor(desiredPoints));
