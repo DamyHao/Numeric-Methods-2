@@ -60,7 +60,7 @@ plot(V2(1,:), V2(2,:));
 
 figure;
 
-xt = V(2,1:end)';
+xt = V2(2,1:end)';
 
 N = length(xt);
 %xt = sin(1:N);
@@ -77,3 +77,40 @@ DF = jaco(@rkFun, xEqui);
 DF2 = jaco(@rkFun, xEqui2);
 [VEC, VAL] = eig(DF2);
 disp(abs(diag(VAL)))
+
+%Posarem 0.9999999 i farem variar el angle
+solutions = [];
+
+for angle = pi/4:0.1:2*pi
+    initialT = 0.99;
+    x0 = [angle; initialT];
+    %[XK, resd, it] = newtonn(x0, 1e-8, 100, @finishAtOne);
+    [XK, conv, it] = newtonnConv(x0, 1e-8, 15, @finishAtOne);
+    if conv == 1 && (XK(2, end) > 1e-14)
+        solutions =  [solutions, XK(:, end)];
+    end
+end
+
+
+function distToC = finishAtOne(in)
+v0mod = 17;
+px = v0mod*cos(in(1));
+py = v0mod*sin(in(1));
+vn0 = [0;-3.779310253377747 ; px ; -3.283185991286169 ; py];
+
+if 0 < in(2) && in(2)<1
+    steps = 20000;
+    h = in(2)/steps ;
+    VTemp = RK4wTime(vn0, h, @rkFun, steps);
+    C = [-2.805118086952745 ; 3.131312518250573 ];
+    xf = VTemp(2,end);
+    yf = VTemp(4,end);
+    distToC = [xf;yf]-C; 
+else 
+    disp('Surpasing t = 1');
+    % If time is greater than 2, we will introduce an "artificial slope" to help newton to converge to r = (0,0)
+    % If we launch newton to the correct point we will not reach this code:
+    distToC = [1;1]*in(2);
+end
+end
+

@@ -34,3 +34,5 @@ function [XK, resd, it] = newtonn(x0, tol, itmax, fun)
         tolk = norm(XK(:, end) - XK(:, end - 1));
         it = it + 1;
     end
+
+ 
