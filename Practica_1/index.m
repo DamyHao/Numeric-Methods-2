@@ -8,7 +8,8 @@ R = 3;
 VOLTATGE = 5;
 
 %% a)
-
+R=3;
+VOLTATGE = 5;
 for n = 10:5:10%30
     N = 2 * n - 1;
     A = zeros(N);
@@ -38,13 +39,13 @@ for n = 10:5:10%30
     V(1) = VOLTATGE;
 
     % Aquestes dos linies son les que solucionen!!
-    [P, L, U] = PLU(A); %TENIM EL PLU ESPATLLAT!
+    [P, L, U] = PLU(A); 
     %[P, L, U] = PLUAlvaro(A);
     x = pluSolve(L, U, P, V);
-    disp(x')
+    disp(x)
 
     matlabSolution = A\V;
-    disp(matlabSolution);
+    disp(x-matlabSolution);
 
     if (n == 10)
         figure()
