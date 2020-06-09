@@ -65,6 +65,11 @@ plot(x, XK3(:, end));
 
 plot(x, x+XK3(:, end));
 AA = x+XK3(:, end);
+
+
+
+
+
 function out = fun2 (fs)
 global D
 out = [fs(1); D*fs-exp(fs); fs(end)];

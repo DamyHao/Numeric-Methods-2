@@ -24,11 +24,11 @@ tolk = 1;
 while it < itmax && tolk > tol
     J = jaco(fun, xk); % Jacobia en la posicio anterior
     fk = feval(fun, xk);
-    %[P, L, U] = PLU(J);
+    [P, L, U] = PLU(J);
     % Si entra un vector fila sha de transposar. Si es columna no
-    % Dx = pluSolve(L, U, P, (-fk)'); %Solucio de la ecuacio J*Dx = -fk
+    Dx = pluSolve(L, U, P, (-fk)); %Solucio de la ecuacio J*Dx = -fk
     % Intenta resoldre aquest sistema
-    Dx = J\(-fk);
+    %Dx = J\(-fk);
     xk = xk + Dx;
     XK = [XK, xk];
     
@@ -36,7 +36,8 @@ while it < itmax && tolk > tol
     it = it + 1;
 end
 
-if(it >= itmax)
+% Mirem si de veritat hem trobat una solucio
+if(it >= itmax || sum(isnan(XK(:, end))) > 0)
     conv = 0;
 else
     conv = 1;

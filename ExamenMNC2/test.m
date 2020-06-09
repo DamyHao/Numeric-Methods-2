@@ -1,4 +1,4 @@
-function [XK, conv, it] = newtonnConv(x0, tol, itmax, fun)
+function [XK, conv, it] = test(x0, tol, itmax, fun)
 % Com el newtonn, pero assegurant-nos que s'ha trobat una solucio.
 % Tambe s'elimina resd
 % This code is the newton method for nonlionear systems, is an iterative
@@ -28,7 +28,8 @@ while it < itmax && tolk > tol
     % Si entra un vector fila sha de transposar. Si es columna no
     Dx = pluSolve(L, U, P, (-fk)); %Solucio de la ecuacio J*Dx = -fk
     % Intenta resoldre aquest sistema
-    %Dx = J\(-fk);
+    Dx2 = J\(-fk);
+    disp(norm(Dx -Dx2));
     xk = xk + Dx;
     XK = [XK, xk];
     
