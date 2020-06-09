@@ -34,7 +34,7 @@ end
 uniqueSolut = uniqueSol(solutions); 
 % uniquetol(solutions',10^-6,'ByRows',true)';
 
-fimplicit(@(x,y) (x.^2 + y - 11).^2 + (x + y.^2 - 7).^2 - 100)
+
 
 for n=1:length(uniqueSolut(1,:))
     potential=V(uniqueSolut(1,n),uniqueSolut(2,n));
@@ -49,23 +49,36 @@ for iii = 1:1:length(uniqueSolut)
     H(2,2)
 end
 %%
-impliticitFun = @(x) [((x(1).^2 + x(2) - 11).^2 + (x(1) + x(2).^2 - 7).^2 - 100); 0 ];
 
-initial0 = [-0.1,1.8];
-jaco(impliticitFun, initial0)
-[y00, conv00, it] = newtonnConv(initial0, 1e-12, 30, impliticitFun);
-initial0 = [2.6,2.5]
-[y11, conv11, it] = newtonnConv(initial0, 1e-12, 30, impliticitFun);
+% TRAMPA PER DIBUIXAR LES LINIES
+figure
+fimplicit(@(x,y) (x.^2 + y - 11).^2 + (x + y.^2 - 7).^2 - 100)
+
+impliticitFun = @(x) ((x(1).^2 + x(2) - 11).^2 + (x(1) + x(2).^2 - 7).^2 - 100);
+ % FUNCIO ON HE POSAT EL PARAMETRE MANUALMENT (li poso 0.1)
+newtonY01 = @(y) (((-0.1).^2 + y - 11).^2 + (-0.1 + y.^2 - 7).^2 - 100);
+
+initial0 = [1];
+[y00, conv00, it] = newtonnConv(initial0, 1e-12, 30, newtonY01);
+y0 = [-0.1; y00(end)];
+
+newtonY02 = @(y) (((-0.11).^2 + y - 11).^2 + (-0.11 + y.^2 - 7).^2 - 100);% Canviem parametre!!
+[y00, conv00, it] = newtonnConv(initial0, 1e-12, 30, newtonY02);
+y1 = [-0.11; y00(end)];
+%initial0 = [2.6,2.5]
+%[y11, conv11, it] = newtonnConv(initial0, 1e-12, 30, impliticitFun);
 
 s = 1;
 maxIt = 1000;
 iterations = 0;
 Y = [];
 
-while s > 0 && iterations <= maxIt
-    [y, iconv] = continuationStep(@fapLambda, y0, y1, s, 1e-6, 100);
+figure
 
-    if iconv == 1% No hem aconseguit solució i ajustem s
+while s > 0 && iterations <= maxIt
+    [y, iconv] = continuationStep(impliticitFun, y0, y0, s, 1e-6, 200);
+
+    if iconv == 1 % No hem aconseguit solució i ajustem s
         s = s - 0.1; % Si la s arriba a 0 desistirem i no buscarem mes solucions
     else
         y0 = y1;
@@ -78,13 +91,23 @@ while s > 0 && iterations <= maxIt
 end
 
 %%
+close all;
 h = 0.01;
-vn0 = [0;-2.8 ; 0 ; 3.1 ;0];
-finalTime = 60;
+vn0 = [0;3 ; 0 ; 2.1 ;0];
+finalTime = 5;
    %   Tfinal sera vn(0) + h*(desiredPoints-1)
 desiredPoints = finalTime/h + 1;
 V = RK4wTime(vn0, h, @rkFun, desiredPoints);
-plot(V)
+plot(V(1,:), V(2,:));
+
+xt = V(2,1:end-1)';
+N = length(xt);
+%xt = sin(1:N);
+fourierSpace = DFT(xt);
+k = -N/2:(N/2-1);
+wk = 2*pi/(N*h).*k; %spectrum of frequencies
+semilogy(wk, abs(fourierSpace));
+grid on;
 
 function gradient = funNewton(coor)
 x = coor(1);
